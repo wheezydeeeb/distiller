@@ -68,7 +68,7 @@ class Trainer():
         total_loss = 0.0
         len_train_set = len(self.train_loader.dataset)
         for batch_idx, (x, y) in enumerate(self.train_loader):
-            x = x.to(self.device)
+            x = x.repeat(1, 3, 1, 1).to(self.device)
             y = y.to(self.device)
             self.optimizer.zero_grad()
 
@@ -118,7 +118,7 @@ class Trainer():
             correct = 0
             acc = 0
             for images, labels in self.test_loader:
-                images = images.to(self.device)
+                images = images.repeat(1, 3, 1, 1).to(self.device)
                 labels = labels.to(self.device)
                 output = self.net(images)
                 # Standard Learning Loss ( Classification Loss)
