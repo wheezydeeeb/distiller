@@ -294,7 +294,14 @@ def run_benchmarks(modes, params, s_name, t_name):
 
 def start_evaluation(args):
     device = util.setup_torch()
-    num_classes = 100 if args.dataset == "cifar100" else 10
+
+    if args.dataset == "cifar100":
+        num_classes = 100
+    elif args.dataset == "cifar10":
+        num_classes = 10
+    elif args.dataset == "fer2013":
+        num_classes = 7
+
     train_loader, test_loader = get_cifar(num_classes,
                                           batch_size=args.batch_size)
 
