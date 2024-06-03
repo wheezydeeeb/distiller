@@ -2,7 +2,7 @@ import argparse
 from pathlib import Path
 
 from distillers import *
-from data_loader import get_cifar
+from data_loader import get_data_loader
 from models.model_factory import create_model
 from trainer import BaseTrainer, KDTrainer, MultiTrainer, TripletTrainer
 from plot import plot_results
@@ -302,7 +302,7 @@ def start_evaluation(args):
     elif args.dataset == "fer2013":
         num_classes = 7
 
-    train_loader, test_loader = get_cifar(num_classes,
+    train_loader, test_loader = get_data_loader(num_classes,
                                           batch_size=args.batch_size)
 
     # for benchmarking, decided whether we want to use unique test folders
