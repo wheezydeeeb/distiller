@@ -117,7 +117,7 @@ class Trainer():
         with torch.no_grad():
             correct = 0
             acc = 0
-            for images, labels in self.test_loader:
+            for idx, (images, labels) in enumerate(self.test_loader):
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device)
