@@ -49,7 +49,7 @@ def load_cifar_10_1():
     return imagedata, torch.Tensor(labels).long()
 
 
-def get_data_loader(num_classes=100, dataset_dir="./data", batch_size=128,
+def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/dataset_fer2013/", batch_size=128,
               use_cifar_10_1=False):
 
     if num_classes == 10:
