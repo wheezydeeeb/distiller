@@ -75,8 +75,11 @@ def get_data_loader(num_classes=100, dataset_dir="./data", batch_size=128,
         normalize,
     ])
 
-    trainset = dataset(root=dataset_dir, train=True,
-                       download=True, transform=train_transform)
+    # trainset = dataset(root=dataset_dir, train=True,
+    #                    download=True, transform=train_transform)
+
+    trainset = dataset(root=dataset_dir, split="train",
+                        transform=train_transform)
 
     test_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -92,8 +95,7 @@ def get_data_loader(num_classes=100, dataset_dir="./data", batch_size=128,
                           download=True,
                           transform=test_transform)
     elif num_classes == 7:
-        testset = dataset(root=dataset_dir, train=False,
-                          download=True,
+        testset = dataset(root=dataset_dir, split="test",
                           transform=test_transform)
 
     train_loader = torch.utils.data.DataLoader(trainset,
