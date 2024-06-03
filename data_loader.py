@@ -106,5 +106,6 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
                                               batch_size=batch_size,
                                               num_workers=NUM_WORKERS,
                                               pin_memory=True, shuffle=False)
+    print(test_loader[0][0])
     return train_loader, test_loader
 
