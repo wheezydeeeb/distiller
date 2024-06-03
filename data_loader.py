@@ -49,7 +49,7 @@ def load_cifar_10_1():
     return imagedata, torch.Tensor(labels).long()
 
 
-def get_cifar(num_classes=100, dataset_dir="./data", batch_size=128,
+def get_data_loader(num_classes=100, dataset_dir="./data", batch_size=128,
               use_cifar_10_1=False):
 
     if num_classes == 10:
@@ -57,9 +57,14 @@ def get_cifar(num_classes=100, dataset_dir="./data", batch_size=128,
         dataset = torchvision.datasets.CIFAR10
         normalize = transforms.Normalize(
             (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))
-    else:
+    elif num_classes == 100:
         print("Loading CIFAR100...")
         dataset = torchvision.datasets.CIFAR100
+        normalize = transforms.Normalize(
+            mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
+    elif num_classes == 7:
+        print("Loading FER2013...")
+        dataset = torchvision.datasets.FER2013
         normalize = transforms.Normalize(
             mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
 
@@ -82,7 +87,11 @@ def get_cifar(num_classes=100, dataset_dir="./data", batch_size=128,
     if use_cifar_10_1 and num_classes == 10:
         imagedata, labels = load_cifar_10_1()
         testset = TensorImgSet((imagedata, labels), transform=test_transform)
-    else:
+    elif num_classes == 100:
+        testset = dataset(root=dataset_dir, train=False,
+                          download=True,
+                          transform=test_transform)
+    elif num_classes == 7:
         testset = dataset(root=dataset_dir, train=False,
                           download=True,
                           transform=test_transform)
@@ -96,3 +105,4 @@ def get_cifar(num_classes=100, dataset_dir="./data", batch_size=128,
                                               num_workers=NUM_WORKERS,
                                               pin_memory=True, shuffle=False)
     return train_loader, test_loader
+
