@@ -118,7 +118,8 @@ class Trainer():
             correct = 0
             acc = 0
             for images, labels in self.test_loader:
-                images = images.repeat(1, 3, 1, 1).to(self.device)
+                # images = images.repeat(1, 3, 1, 1).to(self.device)
+                images = images.to(self.device)
                 labels = labels.to(self.device)
                 output = self.net(images)
                 # Standard Learning Loss ( Classification Loss)
