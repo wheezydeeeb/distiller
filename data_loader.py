@@ -78,7 +78,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
     # trainset = dataset(root=dataset_dir, train=True,
     #                    download=True, transform=train_transform)
 
-    trainset = dataset('train_dir', transform=train_transform)
+    trainset = dataset("/home/khincho/data/FER2013/train/", transform=train_transform)
 
     test_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -94,7 +94,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
                           download=True,
                           transform=test_transform)
     elif num_classes == 7:
-        testset = dataset('val_dir', transform=test_transform)
+        testset = dataset("/home/khincho/data/FER2013/val/", transform=test_transform)
 
     train_loader = torch.utils.data.DataLoader(trainset,
                                                batch_size=batch_size,
