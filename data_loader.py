@@ -81,6 +81,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
     trainset = dataset("/home/khincho/data/FER2013/train/", transform=train_transform)
 
     test_transform = transforms.Compose([
+        transforms.Resize([32, 32]),
         transforms.ToTensor(),
         normalize,
     ])
