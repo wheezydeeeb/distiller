@@ -68,7 +68,7 @@ class Trainer():
         total_loss = 0.0
         len_train_set = len(self.train_loader.dataset)
         for batch_idx, (x, y) in enumerate(self.train_loader):
-            x = x.repeat(1, 3, 1, 1).to(self.device)
+            x = x.to(self.device)
             y = y.to(self.device)
             self.optimizer.zero_grad()
 
