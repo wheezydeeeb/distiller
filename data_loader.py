@@ -69,7 +69,8 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
             mean=[0.507], std=[0.267])
 
     train_transform = transforms.Compose([
-        transforms.RandomCrop(32, padding=4),
+        # transforms.RandomCrop(32, padding=4),
+        transforms.Resize([40, 40]),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         normalize,
