@@ -64,7 +64,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
             mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
     elif num_classes == 7:
         print("Loading FER2013...")
-        dataset = torchvision.datasets.FER2013
+        dataset = torchvision.datasets.ImageFolder
         normalize = transforms.Normalize(
             mean=[0.507], std=[0.267])
 
@@ -78,8 +78,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
     # trainset = dataset(root=dataset_dir, train=True,
     #                    download=True, transform=train_transform)
 
-    trainset = dataset(root=dataset_dir, split="train",
-                        transform=train_transform)
+    trainset = dataset('train_dir', transform=train_transform)
 
     test_transform = transforms.Compose([
         transforms.ToTensor(),
@@ -95,8 +94,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
                           download=True,
                           transform=test_transform)
     elif num_classes == 7:
-        testset = dataset(root=dataset_dir, split="test",
-                          transform=test_transform)
+        testset = dataset('val_dir', transform=test_transform)
 
     train_loader = torch.utils.data.DataLoader(trainset,
                                                batch_size=batch_size,
