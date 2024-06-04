@@ -70,7 +70,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
 
     train_transform = transforms.Compose([
         # transforms.RandomCrop(32, padding=4),
-        transforms.Resize([40, 40]),
+        transforms.Resize([48, 48]),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         normalize,
