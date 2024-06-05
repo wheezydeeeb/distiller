@@ -187,7 +187,7 @@ class ResNetSmall(nn.Module):
 
     def forward(self, x, is_feat=False, use_relu=True):
         out = self.conv1(x)
-        print(f"{out.size()}")
+        print(f"After 1st Conv = {out.size()}")
         out = self.bn1(out)
         if use_relu:
             out = F.relu(out)
@@ -203,6 +203,7 @@ class ResNetSmall(nn.Module):
         feat3 = F.relu(feat3)
         pool = F.avg_pool2d(feat3, 4)
         pool = pool.view(pool.size(0), -1)
+        print(f"After final Pool = {pool.size()}")
         out = self.linear(pool)
 
         if is_feat:
@@ -302,8 +303,8 @@ def resnet152(**kwargs):
 
 
 def test():
-    net = resnet18()
-    y = net(torch.randn(1, 3, 40, 40))
+    net = resnet8()
+    y = net(torch.randn(1, 3, 48, 48))
     print(y.size())
 
-# test()
+test()
