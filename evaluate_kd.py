@@ -8,7 +8,7 @@ from trainer import BaseTrainer, KDTrainer, MultiTrainer, TripletTrainer
 from plot import plot_results
 import util
 
-BATCH_SIZE = 128
+BATCH_SIZE = 32
 TESTFOLDER = "results"
 USE_ID = True
 
