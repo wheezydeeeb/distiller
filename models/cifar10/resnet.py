@@ -202,7 +202,7 @@ class ResNetSmall(nn.Module):
         # the last relu is always included
         feat3 = F.relu(feat3)
         print(f"Before final Avg Pool = {feat3.size()}")
-        pool = F.avg_pool2d(feat3, 4)
+        pool = F.avg_pool2d(feat3, 6)
         print(f"After final Avg Pool = {pool.size()}")
         pool = pool.view(pool.size(0), -1)
         print(f"After final Pool = {pool.size()}")
@@ -306,7 +306,7 @@ def resnet152(**kwargs):
 
 def test():
     net = resnet20()
-    y = net(torch.randn(1, 3, 45, 45))
+    y = net(torch.randn(1, 3, 48, 48))
     print(y.size())
 
 test()
