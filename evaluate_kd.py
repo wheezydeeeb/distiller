@@ -268,28 +268,28 @@ def run_benchmarks(modes, params, s_name, t_name):
     else:
         t_net, best_teacher, best_t_acc = setup_teacher(t_name, params)
 
-    for mode in modes:
-        mode = mode.lower()
-        params_s = params.copy()
-        # reset the teacher
-        t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
+    # for mode in modes:
+    #     mode = mode.lower()
+    #     params_s = params.copy()
+    #     # reset the teacher
+    #     t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
 
-        # load the student and create a results directory for the mode
-        s_net = setup_student(s_name, params)
-        params_s["test_name"] = s_name
-        params_s["results_dir"] = params_s["results_dir"].joinpath(mode)
-        util.check_dir(params_s["results_dir"])
-        # start the test
-        try:
-            run_test = globals()[f"test_{mode}"]
-            results[mode] = run_test(s_net, t_net, params_s)
-        except KeyError:
-            raise RuntimeError(f"Training mode {mode} not supported!")
+    #     # load the student and create a results directory for the mode
+    #     s_net = setup_student(s_name, params)
+    #     params_s["test_name"] = s_name
+    #     params_s["results_dir"] = params_s["results_dir"].joinpath(mode)
+    #     util.check_dir(params_s["results_dir"])
+    #     # start the test
+    #     try:
+    #         run_test = globals()[f"test_{mode}"]
+    #         results[mode] = run_test(s_net, t_net, params_s)
+    #     except KeyError:
+    #         raise RuntimeError(f"Training mode {mode} not supported!")
 
     # Dump the overall results
     print(f"Best results teacher {t_name}: {best_t_acc}")
-    for name, acc in results.items():
-        print(f"Best results for {s_name} with {name} method: {acc}")
+    # for name, acc in results.items():
+    #     print(f"Best results for {s_name} with {name} method: {acc}")
 
 
 def start_evaluation(args):
