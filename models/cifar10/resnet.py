@@ -71,7 +71,7 @@ class Bottleneck(nn.Module):
 
 
 class ResNet(nn.Module):
-    def __init__(self, block, num_blocks, num_classes=10):
+    def __init__(self, block, num_blocks, num_classes=7):
         super(ResNet, self).__init__()
         self.in_planes = 64
 
@@ -110,7 +110,7 @@ class ResNet(nn.Module):
 
         feat4 = self.layer4(feat3)
         feat4 = F.relu(feat4)
-        pool = F.avg_pool2d(feat4, 4)
+        pool = F.avg_pool2d(feat4, 6)
         pool = pool.view(pool.size(0), -1)
         out = self.linear(pool)
 
@@ -305,7 +305,7 @@ def resnet152(**kwargs):
 
 
 def test():
-    net = resnet56()
+    net = resnet18()
     y = net(torch.randn(1, 3, 48, 48))
     print(y.size())
 
