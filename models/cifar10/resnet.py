@@ -176,6 +176,7 @@ class ResNetSmall(nn.Module):
         self.linear = nn.Linear(256 * block.expansion, num_classes)
         self.n_channels = [16, 32, 64]
 
+
     def _make_layer(self, block, planes, num_blocks, stride):
         strides = [stride] + [1] * (num_blocks - 1)
         layers = []
@@ -300,8 +301,8 @@ def resnet152(**kwargs):
 
 
 def test():
-    net = resnet18()
-    y = net(torch.randn(1, 3, 32, 32))
+    net = resnet14()
+    y = net(torch.randn(1, 3, 42, 42))
     print(y.size())
 
 # test()
