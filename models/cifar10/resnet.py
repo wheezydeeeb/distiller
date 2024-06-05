@@ -187,6 +187,7 @@ class ResNetSmall(nn.Module):
 
     def forward(self, x, is_feat=False, use_relu=True):
         out = self.conv1(x)
+        print(f"{out.size()}")
         out = self.bn1(out)
         if use_relu:
             out = F.relu(out)
@@ -301,8 +302,8 @@ def resnet152(**kwargs):
 
 
 def test():
-    net = resnet14()
-    y = net(torch.randn(1, 3, 42, 42))
+    net = resnet18()
+    y = net(torch.randn(1, 3, 40, 40))
     print(y.size())
 
 # test()
