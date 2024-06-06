@@ -28,6 +28,13 @@ def parse_arguments():
                         type=float, help="SGD momentum")
     parser.add_argument("--weight-decay", default=5e-4,
                         type=float, help="SGD weight decay (default: 5e-4)")
+
+    # Parameters for Distillation
+    parser.add_argument("--lmda", default=0.5,
+                        type=float, help="Hinton Loss Lambda (default: 0.5)")
+    parser.add_argument("--T", default=5,
+                        type=float, help="Hinton Loss Temperature (default: 5)")
+
     parser.add_argument("--teacher", default="WRN22_4", type=str,
                         dest="t_name", help="teacher student name")
     parser.add_argument("--student", "--model", default="resnet18",
@@ -336,8 +343,8 @@ def start_evaluation(args):
         "sched": args.scheduler,
         "optim": args.optimizer,
         # fixed knowledge distillation parameters
-        "lambda_student": 0.5,
-        "T_student": 5,
+        "lambda_student": args.lmda,
+        "T_student": args.T,
     }
     test_conf_name = results_dir.joinpath("test_config.json")
     util.dump_json_config(test_conf_name, params)
