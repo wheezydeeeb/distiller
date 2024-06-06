@@ -141,7 +141,7 @@ def test_multikd(s_net, t_net1, params):
     t_net3 = create_model(
         params["t3_name"], params["num_classes"], params["device"])
     t_net3 = util.load_checkpoint(
-        t_net3, "pretrained/fer2013/WRN28_2_685449.pth")
+        t_net3, "pretrained/fer2013/WRN28_2_685449.pth.tar")
     t_net3 = freeze_teacher(t_net3)
 
     t_nets = [t_net2, t_net3]
