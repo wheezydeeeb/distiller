@@ -235,12 +235,17 @@ class MultiTrainer(KDTrainer):
         out_s = self.s_net(data)
         # Standard Learning Loss ( Classification Loss)
         loss = self.loss_fun(out_s, target)
-        # Knowledge Distillation Loss
-        loss_kd = 0.0
-        for t_net in self.t_nets:
-            out_t = t_net(data)
-            loss_kd += self.kd_loss(out_s, out_t, target)
-        loss_kd /= len(self.t_nets)
+        # Average Knowledge Distillation Loss
+        # loss_kd = 0.0
+        # for t_net in self.t_nets:
+        #     out_t = t_net(data)
+        #     loss_kd += self.kd_loss(out_s, out_t, target)
+        # loss_kd /= len(self.t_nets)
+
+        # Maximum Voting Knowledge Distillation Loss
+        loss_kd_list = [self.kd_loss(out_s, t_net(data), target) for t_net in self.t_nets]
+        loss_kd = max(loss_kd_list)
+
         loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd
         loss.backward()
         self.optimizer.step()
