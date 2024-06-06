@@ -145,6 +145,7 @@ def test_multikd(s_net, t_net1, params):
     t_net3 = freeze_teacher(t_net3)
 
     t_nets = [t_net2, t_net3]
+    print(f"Using Student --> {kd_config['s_name']}")
     kd_trainer = MultiTrainer(s_net, t_nets=t_nets, config=kd_config)
     best_acc = kd_trainer.train()
     return best_acc
