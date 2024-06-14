@@ -5,7 +5,7 @@ from torch import nn
 from tqdm import tqdm
 
 from optimizer import get_optimizer, get_scheduler
-
+from pytorch_metric_learning import losses
 
 def init_progress_bar(train_loader):
     batch_size = train_loader.batch_size
@@ -36,7 +36,9 @@ class Trainer():
         self.optimizer = self.optim_cls(net.parameters(), **self.optim_args)
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
-        self.loss_fun = nn.CrossEntropyLoss()
+        # self.loss_fun = nn.CrossEntropyLoss()    # To use CrossEntropyLoss
+        self.loss_fun = losses.ArcFaceLoss()    # To use ArcFaceLoss  
+
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
         self.batch_size = self.train_loader.batch_size
@@ -233,7 +235,7 @@ class MultiTrainer(KDTrainer):
         lambda_ = self.config["lambda_student"]
         T = self.config["T_student"]
         out_s = self.s_net(data)
-        # Standard Learning Loss ( Classification Loss)
+        # Standard Learning Loss (Classification Loss)
         loss = self.loss_fun(out_s, target)
         # Average Knowledge Distillation Loss
         # loss_kd = 0.0
