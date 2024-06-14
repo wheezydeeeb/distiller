@@ -37,7 +37,8 @@ class Trainer():
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         # self.loss_fun = nn.CrossEntropyLoss()    # To use CrossEntropyLoss
-        self.loss_fun = losses.ArcFaceLoss()    # To use ArcFaceLoss  
+        self.loss_fun = losses.ArcFaceLoss(num_classes=7, embedding_size=7, 
+                            margin=28.6, scale=64)    # To use ArcFaceLoss  
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
