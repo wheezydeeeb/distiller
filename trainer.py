@@ -1,11 +1,48 @@
 import sys
 import torch
+import math
 import torch.nn.functional as F
 from torch import nn
 from tqdm import tqdm
 
 from optimizer import get_optimizer, get_scheduler
-from pytorch_metric_learning import losses
+
+# Custom ArcLoss Loss Function
+class ArcLoss(nn.Module):
+    def _init_(self, s=30.0, m=0.50, easy_margin=False):
+        super(ArcLoss, self)._init_()
+        self.s = s  # scale factor
+        self.m = m  # margin
+        self.easy_margin = easy_margin
+        self.cos_m = math.cos(m)
+        self.sin_m = math.sin(m)
+        self.th = math.cos(math.pi - m)
+        self.mm = math.sin(math.pi - m) * m
+
+    def forward(self, input, label):
+        # normalize feature
+        input_norm = F.normalize(input)
+        # normalize weights
+        weights = F.normalize(self.fc.weight)
+        # cosine similarity between input and weights
+        cos_theta = F.linear(input_norm, weights)
+        # clip cosine value to prevent numerical issues
+        cos_theta = cos_theta.clamp(-1 + 1e-7, 1 - 1e-7)
+
+        # compute sine of theta
+        sin_theta = torch.sqrt(1.0 - torch.pow(cos_theta, 2))
+        # compute cos(theta + margin)
+        cos_theta_m = cos_theta * self.cos_m - sin_theta * self.sin_m
+
+        if self.easy_margin:
+            final_cos = torch.where(cos_theta > 0, cos_theta_m, cos_theta)
+        else:
+            final_cos = torch.where(cos_theta > self.th, cos_theta_m, cos_theta - self.mm)
+
+        # scale logits
+        output = self.s * final_cos
+
+        return F.cross_entropy(output, label)
 
 def init_progress_bar(train_loader):
     batch_size = train_loader.batch_size
@@ -36,9 +73,11 @@ class Trainer():
         self.optimizer = self.optim_cls(net.parameters(), **self.optim_args)
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
-        # self.loss_fun = nn.CrossEntropyLoss()    # To use CrossEntropyLoss
-        self.loss_fun = losses.ArcFaceLoss(num_classes=7, embedding_size=7, 
-                            margin=28.6, scale=64)    # To use ArcFaceLoss  
+        """ ----------------------------
+        LOSS FUNCTION INITIALIZATION
+        -----------------------------"""
+        self.loss_fun = nn.CrossEntropyLoss()
+        # self.loss_fun = ArcLoss()
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
