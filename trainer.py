@@ -126,7 +126,8 @@ class Trainer():
             t_bar.update(self.batch_size)
             t_bar.set_postfix_str(f"Acc {curr_acc:.3f}% Loss {curr_loss:.3f}")
         total_acc = float(total_correct / len_train_set)
-        return total_acc
+        # total_loss = total_loss / self.batch_size
+        return total_acc, total_loss
 
     def train(self):
         epochs = self.config["epochs"]
@@ -138,7 +139,7 @@ class Trainer():
             t_bar.reset()
             t_bar.set_description(f"Epoch {epoch}")
             # perform training
-            train_acc = self.train_single_epoch(t_bar)
+            train_acc, train_loss = self.train_single_epoch(t_bar)
             # validate the output and save if it is the best so far
             val_acc = self.validate(epoch)
             if val_acc > best_acc:
