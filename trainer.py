@@ -76,8 +76,8 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        self.loss_fun = nn.CrossEntropyLoss()
-        # self.loss_fun = ArcLoss()
+        # self.loss_fun = nn.CrossEntropyLoss()
+        self.loss_fun = ArcLoss()
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
@@ -173,7 +173,7 @@ class Trainer():
                 correct += pred.eq(labels.data.view_as(pred)).cpu().sum()
 
             acc = float(correct) / len(self.test_loader.dataset)
-            loss = loss /float(idx)
+            loss = loss / float(idx)
             print(f"\nEpoch {epoch}: Validation set: Average loss: {loss:.4f},"
                   f" Accuracy: {correct}/{len(self.test_loader.dataset)} "
                   f"({acc * 100.0:.3f}%)")
