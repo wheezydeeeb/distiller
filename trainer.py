@@ -9,8 +9,8 @@ from optimizer import get_optimizer, get_scheduler
 
 # Custom ArcLoss Loss Function
 class ArcLoss(nn.Module):
-    def _init_(self, s=30.0, m=0.50, easy_margin=False):
-        super(ArcLoss, self)._init_()
+    def __init__(self, s=30.0, m=0.50, easy_margin=False):
+        super(ArcLoss, self).__init__()
         self.s = s  # scale factor
         self.m = m  # margin
         self.easy_margin = easy_margin
