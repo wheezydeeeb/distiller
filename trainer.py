@@ -23,7 +23,7 @@ class ArcLoss(nn.Module):
         # normalize feature
         input_norm = F.normalize(input)
         # normalize weights
-        weights_norm = F.normalize(weights)
+        weights_norm = torch.transpose(F.normalize(weights), 0, 1)
         # cosine similarity between input and weights
         cos_theta = F.linear(input_norm, weights_norm)
         # clip cosine value to prevent numerical issues
