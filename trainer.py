@@ -160,18 +160,20 @@ class Trainer():
         with torch.no_grad():
             correct = 0
             acc = 0
+            loss = 0
             for idx, (images, labels) in enumerate(self.test_loader):
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device)
                 output = self.net(images)
                 # Standard Learning Loss ( Classification Loss)
-                loss = self.loss_fun(output, labels)
+                loss += self.loss_fun(output, labels)
                 # get the index of the max log-probability
                 pred = output.data.max(1, keepdim=True)[1]
                 correct += pred.eq(labels.data.view_as(pred)).cpu().sum()
 
             acc = float(correct) / len(self.test_loader.dataset)
+            loss = loss /float(idx)
             print(f"\nEpoch {epoch}: Validation set: Average loss: {loss:.4f},"
                   f" Accuracy: {correct}/{len(self.test_loader.dataset)} "
                   f"({acc * 100.0:.3f}%)")
