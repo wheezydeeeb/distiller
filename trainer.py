@@ -279,7 +279,7 @@ class MultiTrainer(KDTrainer):
         T = self.config["T_student"]
         out_s = self.s_net(data)
         # Standard Learning Loss (Classification Loss)
-        loss = self.loss_fun(out_s, target, self.s_net.linear.weight)
+        loss = self.loss_fun(out_s, target, self.s_net.module.linear.weight)
         # Average Knowledge Distillation Loss
         # loss_kd = 0.0
         # for t_net in self.t_nets:
