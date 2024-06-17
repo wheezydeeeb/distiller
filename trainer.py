@@ -8,6 +8,11 @@ from tqdm import tqdm
 from optimizer import get_optimizer, get_scheduler
 
 # Custom ArcLoss Loss Function
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
 class ArcLoss(nn.Module):
     def __init__(self, s=30.0, m=0.50, easy_margin=False):
         super(ArcLoss, self).__init__()
@@ -20,18 +25,11 @@ class ArcLoss(nn.Module):
         self.mm = math.sin(math.pi - m) * m
 
     def forward(self, input, label):
-        # normalize feature
         input_norm = F.normalize(input)
-        # normalize weights
-        weights = F.normalize(self.fc.weight)
-        # cosine similarity between input and weights
+        weights = F.normalize(self.linear.weight)
         cos_theta = F.linear(input_norm, weights)
-        # clip cosine value to prevent numerical issues
         cos_theta = cos_theta.clamp(-1 + 1e-7, 1 - 1e-7)
-
-        # compute sine of theta
         sin_theta = torch.sqrt(1.0 - torch.pow(cos_theta, 2))
-        # compute cos(theta + margin)
         cos_theta_m = cos_theta * self.cos_m - sin_theta * self.sin_m
 
         if self.easy_margin:
@@ -39,9 +37,7 @@ class ArcLoss(nn.Module):
         else:
             final_cos = torch.where(cos_theta > self.th, cos_theta_m, cos_theta - self.mm)
 
-        # scale logits
         output = self.s * final_cos
-
         return F.cross_entropy(output, label)
 
 def init_progress_bar(train_loader):
