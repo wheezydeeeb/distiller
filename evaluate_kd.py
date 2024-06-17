@@ -79,7 +79,7 @@ def setup_teacher(t_name, params):
     # reload and get the best model
     t_net = util.load_checkpoint(t_net, best_teacher)
     teacher_trainer = BaseTrainer(t_net, config=teacher_config)
-    best_t_acc = teacher_trainer.validate()
+    best_t_acc, best_t_loss = teacher_trainer.validate()
 
     # also save this information in a csv file for plotting
     name = teacher_config["test_name"] + "_val"
@@ -87,7 +87,7 @@ def setup_teacher(t_name, params):
     with acc_file_name.open("w+") as acc_file:
         acc_file.write("Training Loss,Validation Loss\n")
         for _ in range(params["epochs"]):
-            acc_file.write(f"0.0,{best_t_acc}\n")
+            acc_file.write(f"0.0,{best_t_acc},{best_t_loss}\n")
     return t_net, best_teacher, best_t_acc
 
 
