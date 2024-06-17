@@ -89,7 +89,7 @@ class Trainer():
         self.best_model_file = folder.joinpath(f"{self.name}_best.pth.tar")
         acc_file_name = folder.joinpath(f"{self.name}_train.csv")
         self.acc_file = acc_file_name.open("w+")
-        self.acc_file.write("Training Loss,Validation Loss\n")
+        self.acc_file.write("Train Acc,Val Acc,Train Loss,Val Loss\n")
 
     def set_optimizer(self, optimizer):
         self.optimizer = optimizer
@@ -123,11 +123,10 @@ class Trainer():
             total_loss += loss
             curr_acc = 100.0 * (total_correct / float(len_train_set))
             curr_loss = (total_loss / float(batch_idx))
-            print(f"{float(batch_idx)}\n")
             t_bar.update(self.batch_size)
             t_bar.set_postfix_str(f"Acc {curr_acc:.3f}% Loss {curr_loss:.3f}")
         total_acc = float(total_correct / len_train_set)
-        total_loss = total_loss / self.batch_size
+        total_loss = total_loss / float(batch_idx)
         return total_acc, total_loss
 
     def train(self):
