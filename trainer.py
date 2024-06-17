@@ -167,7 +167,7 @@ class Trainer():
                 labels = labels.to(self.device)
                 output = self.net(images)
                 # Standard Learning Loss ( Classification Loss)
-                loss += self.loss_fun(output, labels)
+                loss += self.loss_fun(output, labels, self.net.linear.weight)
                 # get the index of the max log-probability
                 pred = output.data.max(1, keepdim=True)[1]
                 correct += pred.eq(labels.data.view_as(pred)).cpu().sum()
