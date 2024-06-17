@@ -123,6 +123,7 @@ class Trainer():
             total_loss += loss
             curr_acc = 100.0 * (total_correct / float(len_train_set))
             curr_loss = (total_loss / float(batch_idx))
+            print(f"{float(batch_idx)}\n")
             t_bar.update(self.batch_size)
             t_bar.set_postfix_str(f"Acc {curr_acc:.3f}% Loss {curr_loss:.3f}")
         total_acc = float(total_correct / len_train_set)
