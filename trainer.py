@@ -188,7 +188,7 @@ class BaseTrainer(Trainer):
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
         output = self.net(data)
-        loss = self.loss_fun(output, target)
+        loss = self.loss_fun(output, target, self.net.module.linear.weight)
         loss.backward()
         self.optimizer.step()
         return output, loss
