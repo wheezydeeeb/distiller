@@ -63,7 +63,7 @@ def init_progress_bar(train_loader):
 class Trainer():
     def __init__(self, net, config):
 
-        self.weights = nn.Parameter(torch.randn(7, 64))  # Initialize weights for ArcLoss
+        self.weights = nn.Parameter(torch.randn(7, 64)).to("cuda")  # Initialize weights for ArcLoss
 
         self.net = net
         self.device = config["device"]
