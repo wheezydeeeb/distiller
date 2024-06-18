@@ -63,7 +63,7 @@ def init_progress_bar(train_loader):
 class Trainer():
     def __init__(self, net, config):
 
-        weights = nn.Parameter(torch.randn(7, 64))  # Initialize weights for ArcLoss
+        self.weights = nn.Parameter(torch.randn(7, 64))  # Initialize weights for ArcLoss
 
         self.net = net
         self.device = config["device"]
@@ -79,8 +79,8 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        self.loss_fun = nn.CrossEntropyLoss()
-        # self.loss_fun = ArcLoss()
+        # self.loss_fun = nn.CrossEntropyLoss()
+        self.loss_fun = ArcLoss()
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
