@@ -62,6 +62,9 @@ def init_progress_bar(train_loader):
 
 class Trainer():
     def __init__(self, net, config):
+
+        weights = nn.Parameter(torch.randn(7, 64))  # Initialize weights for ArcLoss
+
         self.net = net
         self.device = config["device"]
         self.name = config["test_name"]
@@ -70,7 +73,7 @@ class Trainer():
         sched = config["sched"]
         self.optim_cls, self.optim_args = get_optimizer(optim, config)
         self.sched_cls, self.sched_args = get_scheduler(sched, config)
-        self.optimizer = self.optim_cls(net.parameters(), **self.optim_args)
+        self.optimizer = self.optim_cls(list(net.parameters()) + [weights], **self.optim_args)
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         """ ----------------------------
@@ -167,7 +170,7 @@ class Trainer():
                 labels = labels.to(self.device)
                 output = self.net(images)
                 # Standard Learning Loss ( Classification Loss)
-                loss += self.loss_fun(output, labels, self.net.module.linear.weight)
+                loss += self.loss_fun(output, labels, self.weights)
                 # get the index of the max log-probability
                 pred = output.data.max(1, keepdim=True)[1]
                 correct += pred.eq(labels.data.view_as(pred)).cpu().sum()
@@ -188,7 +191,7 @@ class BaseTrainer(Trainer):
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
         output = self.net(data)
-        loss = self.loss_fun(output, target) # , self.net.module.linear.weight)
+        loss = self.loss_fun(output, target, self.weights) # , self.net.module.linear.weight)
         loss.backward()
         self.optimizer.step()
         return output, loss
