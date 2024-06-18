@@ -76,8 +76,8 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        # self.loss_fun = nn.CrossEntropyLoss()
-        self.loss_fun = ArcLoss()
+        self.loss_fun = nn.CrossEntropyLoss()
+        # self.loss_fun = ArcLoss()
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
@@ -188,7 +188,7 @@ class BaseTrainer(Trainer):
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
         output = self.net(data)
-        loss = self.loss_fun(output, target, self.net.module.linear.weight)
+        loss = self.loss_fun(output, target) # , self.net.module.linear.weight)
         loss.backward()
         self.optimizer.step()
         return output, loss
