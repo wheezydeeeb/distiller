@@ -85,7 +85,7 @@ def setup_teacher(t_name, params):
     name = teacher_config["test_name"] + "_val"
     acc_file_name = params["results_dir"].joinpath(f"{name}.csv")
     with acc_file_name.open("w+") as acc_file:
-        acc_file.write("Training Loss,Validation Loss\n")
+        acc_file.write("Val. Accuracy,Val. Loss\n")
         for _ in range(params["epochs"]):
             acc_file.write(f"0.0,{best_t_acc},{best_t_loss}\n")
     return t_net, best_teacher, best_t_acc
@@ -276,28 +276,28 @@ def run_benchmarks(modes, params, s_name, t_name):
     else:
         t_net, best_teacher, best_t_acc = setup_teacher(t_name, params)
 
-    for mode in modes:
-        mode = mode.lower()
-        params_s = params.copy()
-        # reset the teacher
-        t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
+    # for mode in modes:
+    #     mode = mode.lower()
+    #     params_s = params.copy()
+    #     # reset the teacher
+    #     t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
 
-        # load the student and create a results directory for the mode
-        s_net = setup_student(s_name, params)
-        params_s["test_name"] = s_name
-        params_s["results_dir"] = params_s["results_dir"].joinpath(mode)
-        util.check_dir(params_s["results_dir"])
-        # start the test
-        try:
-            run_test = globals()[f"test_{mode}"]
-            results[mode] = run_test(s_net, t_net, params_s)
-        except KeyError:
-            raise RuntimeError(f"Training mode {mode} not supported!")
+    #     # load the student and create a results directory for the mode
+    #     s_net = setup_student(s_name, params)
+    #     params_s["test_name"] = s_name
+    #     params_s["results_dir"] = params_s["results_dir"].joinpath(mode)
+    #     util.check_dir(params_s["results_dir"])
+    #     # start the test
+    #     try:
+    #         run_test = globals()[f"test_{mode}"]
+    #         results[mode] = run_test(s_net, t_net, params_s)
+    #     except KeyError:
+    #         raise RuntimeError(f"Training mode {mode} not supported!")
 
-    # Dump the overall results
-    print(f"Best results teacher {t_name}: {best_t_acc}")
-    for name, acc in results.items():
-        print(f"Best results for {s_name} with {name} method: {acc}")
+    # # Dump the overall results
+    # print(f"Best results teacher {t_name}: {best_t_acc}")
+    # for name, acc in results.items():
+    #     print(f"Best results for {s_name} with {name} method: {acc}")
 
 
 def start_evaluation(args):
