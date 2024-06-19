@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from metrics import ArcModule
+import metrics
 
 
 class BasicBlock(nn.Module):
@@ -78,7 +78,7 @@ class WideResNet(nn.Module):
 
         """Changes introduced for metric function incorporation"""
         self.linear = nn.Linear(n_channels[3], 512)
-        self.arc_module = ArcModule(in_features=512, out_features = num_classes)
+        self.arc_module = metrics.ArcModule(in_features=512, out_features = num_classes)
         self.n_channels = n_channels
 
         for m in self.modules():
