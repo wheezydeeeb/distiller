@@ -5,6 +5,7 @@ import torch.nn.functional as F
 from torch import nn
 from tqdm import tqdm
 from torch.nn import DataParallel
+import numpy as np
 
 from optimizer import get_optimizer, get_scheduler
 
@@ -104,11 +105,17 @@ class Trainer():
             y_hat, loss = self.calculate_loss(x, y)
 
             # Metric tracking boilerplate
-            pred = y_hat.data.max(1, keepdim=True)[1]
-            total_correct += pred.eq(y.data.view_as(pred)).sum()
-            total_loss += loss
-            curr_acc = 100.0 * (total_correct / float(len_train_set))
-            curr_loss = (total_loss / float(batch_idx))
+            # pred = y_hat.data.max(1, keepdim=True)[1]
+            # total_correct += pred.eq(y.data.view_as(pred)).sum()
+            # total_loss += loss
+            # curr_acc = 100.0 * (total_correct / float(len_train_set))
+            # curr_loss = (total_loss / float(batch_idx))
+
+            # Metric Tracking for ArcLoss Implementation
+            y_hat = y_hat.data.cpu().numpy()
+            output = np.argmax(output, axis=1)
+            label = label.data.cpu().numpy()
+
             t_bar.update(self.batch_size)
             t_bar.set_postfix_str(f"Acc {curr_acc:.3f}% Loss {curr_loss:.3f}")
         total_acc = float(total_correct / len_train_set)
