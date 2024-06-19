@@ -41,18 +41,13 @@ def init_progress_bar(train_loader):
 
 
 class Trainer():
-    def __init__(self, net, metric_fc, config):
+    def __init__(self, net, config):
 
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
         # self.loss_fun = nn.CrossEntropyLoss()
         self.loss_fun = FocalLoss(gamma=2)
-
-        """-----------------------------
-        METRIC FUNCTION INITIALIZATION
-        -----------------------------"""
-        # self.metric_fc = metric_fc
 
         self.net = net
         self.device = config["device"]
