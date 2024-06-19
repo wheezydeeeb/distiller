@@ -73,7 +73,9 @@ class WideResNet(nn.Module):
         # global average pooling and classifier
         self.bn1 = nn.BatchNorm2d(n_channels[3])
         self.relu = nn.ReLU(inplace=True)
-        self.linear = nn.Linear(n_channels[3], num_classes)
+
+        """Changes introduced for metric function incorporation"""
+        self.linear = nn.Linear(n_channels[3], 512)
         self.n_channels = n_channels
 
         for m in self.modules():
