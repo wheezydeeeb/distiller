@@ -119,7 +119,7 @@ class Trainer():
             # print(f"--------------")
             # print(f"{y}")
             # print(f"--------------")
-            curr_acc = np.mean((y_hat == y).astype(int))
+            curr_acc = 100 * np.mean((y_hat == y).astype(int))
 
             t_bar.update(self.batch_size)
             t_bar.set_postfix_str(f"Acc {curr_acc:.3f}% Loss {curr_loss:.3f}")

@@ -3,6 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from metrics import ArcModule
+
 
 class BasicBlock(nn.Module):
     def __init__(self, in_planes, out_planes, stride, dropRate=0.0):
@@ -75,7 +77,8 @@ class WideResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
         """Changes introduced for metric function incorporation"""
-        self.linear = nn.Linear(n_channels[3], num_classes)
+        self.linear = nn.Linear(n_channels[3], 512)
+        self.arc_module = ArcModule(in_features=512, out_features = num_classes)
         self.n_channels = n_channels
 
         for m in self.modules():
@@ -88,7 +91,7 @@ class WideResNet(nn.Module):
             elif isinstance(m, nn.Linear):
                 m.bias.data.zero_()
 
-    def forward(self, x):
+    def forward(self, x, labels=None):
         out = self.conv1(x)
         out = self.layer1(out)
         out = self.layer2(out)
@@ -97,7 +100,8 @@ class WideResNet(nn.Module):
         out = F.avg_pool2d(out, 8)
         out = out.view(-1, self.n_channels[-1])
         out = self.linear(out)
-        print(f"{out}")
+        if labels is not None:
+            return self.arc_module(out, labels)
         return out
 
     def get_channel_num(self):
