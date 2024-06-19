@@ -43,17 +43,6 @@ def init_progress_bar(train_loader):
 class Trainer():
     def __init__(self, net, config):
 
-        self.net = net
-        self.device = config["device"]
-        self.name = config["test_name"]
-        # Retrieve preconfigured optimizers and schedulers for all runs
-        optim = config["optim"]
-        sched = config["sched"]
-        self.optim_cls, self.optim_args = get_optimizer(optim, config)
-        self.sched_cls, self.sched_args = get_scheduler(sched, config)
-        self.optimizer = self.optim_cls(list(net.parameters()) + [self.weights], **self.optim_args)
-        self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
-
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
@@ -64,6 +53,17 @@ class Trainer():
         METRIC FUNCTION INITIALIZATION
         -----------------------------"""
         self.metric_fc = DataParallel(metrics.ArcMarginProduct(512, config["num_classes"]).to("cuda"))
+
+        self.net = net
+        self.device = config["device"]
+        self.name = config["test_name"]
+        # Retrieve preconfigured optimizers and schedulers for all runs
+        optim = config["optim"]
+        sched = config["sched"]
+        self.optim_cls, self.optim_args = get_optimizer(optim, config)
+        self.sched_cls, self.sched_args = get_scheduler(sched, config)
+        self.optimizer = self.optim_cls([{'params': model.parameters()}, {'params': metric_fc.parameters()}], **self.optim_args)
+        self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]

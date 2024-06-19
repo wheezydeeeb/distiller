@@ -61,6 +61,7 @@ def parse_arguments():
 def setup_teacher(t_name, params):
     # Teacher Model
     num_classes = params["num_classes"]
+    print(f"Number of Classes --> {num_classes}")
     t_net = create_model(t_name, num_classes, params["device"])
     teacher_config = params.copy()
     teacher_config["test_name"] = t_name + "_teacher"
