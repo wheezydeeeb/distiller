@@ -310,8 +310,10 @@ def start_evaluation(args):
         num_classes = 10
     elif args.dataset == "fer2013":
         num_classes = 7
+    elif args.dataset == "ferplus":
+        num_classes = 8
 
-    train_loader, test_loader = get_data_loader(num_classes,
+    train_loader, test_loader = get_data_loader(num_classes=num_classes,
                                           batch_size=args.batch_size)
 
     # for benchmarking, decided whether we want to use unique test folders
