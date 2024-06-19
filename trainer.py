@@ -62,7 +62,7 @@ class Trainer():
         sched = config["sched"]
         self.optim_cls, self.optim_args = get_optimizer(optim, config)
         self.sched_cls, self.sched_args = get_scheduler(sched, config)
-        self.optimizer = self.optim_cls([{'params': net.parameters()}, {'params': metric_fc.parameters()}], **self.optim_args)
+        self.optimizer = self.optim_cls([{'params': net.parameters()}, {'params': self.metric_fc.parameters()}], **self.optim_args)
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         self.train_loader = config["train_loader"]
