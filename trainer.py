@@ -152,7 +152,8 @@ class Trainer():
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device)
-                output = self.net(images)
+                feature = self.net(images)
+                output = self.metric_fc(feature, labels)
                 # Standard Learning Loss ( Classification Loss)
                 loss += self.loss_fun(output, labels, self.weights)
                 # get the index of the max log-probability
