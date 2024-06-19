@@ -46,8 +46,8 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        # self.loss_fun = nn.CrossEntropyLoss()
-        self.loss_fun = FocalLoss(gamma=2)
+        self.loss_fun = nn.CrossEntropyLoss()
+        # self.loss_fun = FocalLoss(gamma=2)
 
         """-----------------------------
         METRIC FUNCTION INITIALIZATION
