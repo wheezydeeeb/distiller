@@ -4,7 +4,6 @@ from pathlib import Path
 from distillers import *
 from data_loader import get_data_loader
 from models.model_factory import create_model
-from models import metrics
 from trainer import BaseTrainer, KDTrainer, MultiTrainer, TripletTrainer
 from plot import plot_results
 import util
