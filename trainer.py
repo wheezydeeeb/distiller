@@ -4,6 +4,7 @@ import math
 import torch.nn.functional as F
 from torch import nn
 from tqdm import tqdm
+from torch.nn import DataParallel
 
 from optimizer import get_optimizer, get_scheduler
 from models import metrics
@@ -62,7 +63,7 @@ class Trainer():
         """-----------------------------
         METRIC FUNCTION INITIALIZATION
         -----------------------------"""
-        self.metric_fc = metrics.ArcMarginProduct(512, config["num_classes"])
+        self.metric_fc = DataParallel(metrics.ArcMarginProduct(512, config["num_classes"]).to("cuda"))
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
