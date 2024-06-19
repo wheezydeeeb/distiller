@@ -97,7 +97,7 @@ class Trainer():
         len_train_set = len(self.train_loader.dataset)
         for batch_idx, (x, y) in enumerate(self.train_loader):
             x = x.to(self.device)
-            y = y.to(self.device)
+            y = y.to(self.device).long()
             self.optimizer.zero_grad()
 
             # this function is implemented by the subclass
@@ -150,7 +150,7 @@ class Trainer():
             for idx, (images, labels) in enumerate(self.test_loader):
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
-                labels = labels.to(self.device)
+                labels = labels.to(self.device).long()
                 feature = self.net(images)
                 output = self.metric_fc(feature, labels)
                 # Standard Learning Loss ( Classification Loss)
