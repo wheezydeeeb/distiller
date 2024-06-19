@@ -7,42 +7,20 @@ from tqdm import tqdm
 
 from optimizer import get_optimizer, get_scheduler
 
-# Custom ArcLoss Loss Function
-class ArcLoss(nn.Module):
-    def __init__(self, s=30.0, m=0.50, easy_margin=False):
-        super(ArcLoss, self).__init__()
-        self.s = s  # scale factor
-        self.m = m  # margin
-        self.easy_margin = easy_margin
-        self.cos_m = math.cos(m)
-        self.sin_m = math.sin(m)
-        self.th = math.cos(math.pi - m)
-        self.mm = math.sin(math.pi - m) * m
+# Custom Focal Loss Function
+class FocalLoss(nn.Module):
 
-    def forward(self, input, label, weights):
-        # normalize feature
-        input_norm = F.normalize(input)
-        # normalize weights
-        weights_norm = torch.transpose(F.normalize(weights), 0, 1)
-        # cosine similarity between input and weights
-        cos_theta = F.linear(input_norm, weights_norm)
-        # clip cosine value to prevent numerical issues
-        cos_theta = cos_theta.clamp(-1 + 1e-7, 1 - 1e-7)
+    def __init__(self, gamma=0, eps=1e-7):
+        super(FocalLoss, self).__init__()
+        self.gamma = gamma
+        self.eps = eps
+        self.ce = torch.nn.CrossEntropyLoss()
 
-        # compute sine of theta
-        sin_theta = torch.sqrt(1.0 - torch.pow(cos_theta, 2))
-        # compute cos(theta + margin)
-        cos_theta_m = cos_theta * self.cos_m - sin_theta * self.sin_m
-
-        if self.easy_margin:
-            final_cos = torch.where(cos_theta > 0, cos_theta_m, cos_theta)
-        else:
-            final_cos = torch.where(cos_theta > self.th, cos_theta_m, cos_theta - self.mm)
-
-        # scale logits
-        output = self.s * final_cos
-
-        return F.cross_entropy(output, label)
+    def forward(self, input, target):
+        logp = self.ce(input, target)
+        p = torch.exp(-logp)
+        loss = (1 - p) ** self.gamma * logp
+        return loss.mean()
 
 def init_progress_bar(train_loader):
     batch_size = train_loader.batch_size
@@ -80,7 +58,7 @@ class Trainer():
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
         # self.loss_fun = nn.CrossEntropyLoss()
-        self.loss_fun = ArcLoss()
+        self.loss_fun = FocalLoss(gamma=2)
 
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
