@@ -74,9 +74,7 @@ def setup_teacher(t_name, params):
     else:
         # Teacher training
         print("---------- Training Teacher -------")
-        metric_fc = metrics.ArcMarginProduct(512, num_classes)
-        metric_fc = metric_fc.to("cuda")
-        teacher_trainer = BaseTrainer(t_net, metric_fc, config=teacher_config)
+        teacher_trainer = BaseTrainer(t_net, config=teacher_config)
         teacher_trainer.train()
         best_teacher = teacher_trainer.best_model_file
 

@@ -46,13 +46,13 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        self.loss_fun = nn.CrossEntropyLoss()
-        # self.loss_fun = FocalLoss(gamma=2)
+        # self.loss_fun = nn.CrossEntropyLoss()
+        self.loss_fun = FocalLoss(gamma=2)
 
         """-----------------------------
         METRIC FUNCTION INITIALIZATION
         -----------------------------"""
-        self.metric_fc = metric_fc
+        # self.metric_fc = metric_fc
 
         self.net = net
         self.device = config["device"]
@@ -62,7 +62,7 @@ class Trainer():
         sched = config["sched"]
         self.optim_cls, self.optim_args = get_optimizer(optim, config)
         self.sched_cls, self.sched_args = get_scheduler(sched, config)
-        self.optimizer = self.optim_cls([{'params': net.parameters()}, {'params': metric_fc.parameters()}], **self.optim_args)
+        self.optimizer = self.optim_cls(net.parameters(), **self.optim_args)
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         self.train_loader = config["train_loader"]
@@ -164,8 +164,7 @@ class Trainer():
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device).long()
-                feature = self.net(images)
-                output = self.metric_fc(feature, labels)
+                output = self.net(images, labels)
                 # Standard Learning Loss ( Classification Loss)
                 loss += self.loss_fun(output, labels)
                 # get the index of the max log-probability
@@ -188,7 +187,7 @@ class BaseTrainer(Trainer):
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
         # feature = self.net(data)
-        output = self.net(data)
+        output = self.net(data, target)
         # output = self.metric_fc(feature, target)
         loss = self.loss_fun(output, target)
         loss.backward()
