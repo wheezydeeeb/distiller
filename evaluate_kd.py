@@ -4,6 +4,7 @@ from pathlib import Path
 from distillers import *
 from data_loader import get_data_loader
 from models.model_factory import create_model
+from models import metrics
 from trainer import BaseTrainer, KDTrainer, MultiTrainer, TripletTrainer
 from plot import plot_results
 import util
@@ -73,7 +74,8 @@ def setup_teacher(t_name, params):
     else:
         # Teacher training
         print("---------- Training Teacher -------")
-        teacher_trainer = BaseTrainer(t_net, config=teacher_config)
+        metric_fc = metrics.ArcMarginProduct(512, num_classes)
+        teacher_trainer = BaseTrainer(t_net, metric_fc, config=teacher_config)
         teacher_trainer.train()
         best_teacher = teacher_trainer.best_model_file
 

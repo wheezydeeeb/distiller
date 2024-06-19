@@ -7,7 +7,6 @@ from tqdm import tqdm
 from torch.nn import DataParallel
 
 from optimizer import get_optimizer, get_scheduler
-from models import metrics
 
 # Custom Focal Loss Function
 class FocalLoss(nn.Module):
@@ -16,7 +15,7 @@ class FocalLoss(nn.Module):
         super(FocalLoss, self).__init__()
         self.gamma = gamma
         self.eps = eps
-        self.ce = torch.nn.CrossEntropyLoss()
+        self.ce = nn.CrossEntropyLoss()
 
     def forward(self, input, target):
         logp = self.ce(input, target)
@@ -41,7 +40,7 @@ def init_progress_bar(train_loader):
 
 
 class Trainer():
-    def __init__(self, net, config):
+    def __init__(self, net, metric_fc, config):
 
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
@@ -52,7 +51,7 @@ class Trainer():
         """-----------------------------
         METRIC FUNCTION INITIALIZATION
         -----------------------------"""
-        self.metric_fc = DataParallel(metrics.ArcMarginProduct(512, config["num_classes"]).to("cuda"))
+        self.metric_fc = metric_fc
 
         self.net = net
         self.device = config["device"]
@@ -62,7 +61,7 @@ class Trainer():
         sched = config["sched"]
         self.optim_cls, self.optim_args = get_optimizer(optim, config)
         self.sched_cls, self.sched_args = get_scheduler(sched, config)
-        self.optimizer = self.optim_cls([{'params': net.parameters()}, {'params': self.metric_fc.parameters()}], **self.optim_args)
+        self.optimizer = self.optim_cls([{'params': net.parameters()}, {'params': metric_fc.parameters()}], **self.optim_args)
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         self.train_loader = config["train_loader"]
