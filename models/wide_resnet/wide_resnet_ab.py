@@ -75,7 +75,7 @@ class WideResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
         """Changes introduced for metric function incorporation"""
-        self.linear = nn.Linear(n_channels[3], 512)
+        self.linear = nn.Linear(n_channels[3], num_classes)
         self.n_channels = n_channels
 
         for m in self.modules():
@@ -96,7 +96,9 @@ class WideResNet(nn.Module):
         out = self.relu(self.bn1(out))
         out = F.avg_pool2d(out, 8)
         out = out.view(-1, self.n_channels[-1])
-        return self.linear(out)
+        out = self.linear(out)
+        print(f"{out}")
+        return out
 
     def get_channel_num(self):
         return self.n_channels

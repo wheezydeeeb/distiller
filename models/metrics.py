@@ -48,8 +48,6 @@ class ArcMarginProduct(nn.Module):
         # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------
         output = (one_hot * phi) + ((1.0 - one_hot) * cosine)  # you can use torch.where if your torch.__version__ is 0.4
         output *= self.s
-        # 
-        print(f"{output}\n")
 
         return output
 
