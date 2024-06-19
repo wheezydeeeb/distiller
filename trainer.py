@@ -6,6 +6,7 @@ from torch import nn
 from tqdm import tqdm
 
 from optimizer import get_optimizer, get_scheduler
+from models import metrics
 
 # Custom Focal Loss Function
 class FocalLoss(nn.Module):
@@ -41,8 +42,6 @@ def init_progress_bar(train_loader):
 class Trainer():
     def __init__(self, net, config):
 
-        self.weights = nn.Parameter(torch.randn(7, 64)).to("cuda")  # Initialize weights for ArcLoss
-
         self.net = net
         self.device = config["device"]
         self.name = config["test_name"]
@@ -60,10 +59,16 @@ class Trainer():
         # self.loss_fun = nn.CrossEntropyLoss()
         self.loss_fun = FocalLoss(gamma=2)
 
+        """-----------------------------
+        METRIC FUNCTION INITIALIZATION
+        -----------------------------"""
+        self.metric_fc = metrics.ArcMarginProduct(512, config["num_classes"])
+
         self.train_loader = config["train_loader"]
         self.test_loader = config["test_loader"]
         self.batch_size = self.train_loader.batch_size
         self.config = config
+
         # tqdm bar
         self.t_bar = None
         folder = config["results_dir"]
