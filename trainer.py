@@ -115,8 +115,8 @@ class Trainer():
             y_hat = y_hat.data.cpu().numpy()
             y_hat = np.argmax(y_hat, axis=1)
             y = y.data.cpu().numpy()
-            print(y_hat)
-            print(y)
+            print(f"{y_hat}")
+            print(f"{y}")
             curr_acc = np.mean((y_hat == y).astype(int))
 
             t_bar.update(self.batch_size)
