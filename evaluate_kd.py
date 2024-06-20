@@ -285,6 +285,7 @@ def run_benchmarks(modes, params, s_name, t_name):
 
             """No need to load teacher during NOKD"""
             # t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
+            t_net = "MODE_NOKD"
 
             # load the student and create a results directory for the mode
             s_net = setup_student(s_name, params)
@@ -299,7 +300,7 @@ def run_benchmarks(modes, params, s_name, t_name):
                 raise RuntimeError(f"Training mode {mode} not supported!")
 
         # Dump the overall results
-        print(f"Best results teacher {t_name}: {best_t_acc}")
+        # print(f"Best results teacher {t_name}: {best_t_acc}")
         for name, acc in results.items():
             print(f"Best results for {s_name} with {name} method: {acc}")
 
