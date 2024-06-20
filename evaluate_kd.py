@@ -39,7 +39,7 @@ def parse_arguments():
                         dest="t_name", help="teacher student name")
     parser.add_argument("--student", "--model", default="resnet18",
                         dest="s_name", type=str, help="teacher student name")
-    parser.add_argument("--optimizer", default="sgd",
+    parser.add_argument("--optimizer", default="friendlysam",
                         dest="optimizer", type=str,
                         help="Which optimizer to use")
     parser.add_argument("--scheduler", default="cosannlr",
