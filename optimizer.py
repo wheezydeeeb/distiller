@@ -51,6 +51,9 @@ def get_scheduler(sched_str, params):
     elif sched_str.lower() == "constant":
         # use a constant scheduler, i.e. no scheduler
         return DummyScheduler, sched_args
+    elif sched_str.lower() == "cosannlr":
+        
+
     print("Requested optimizer not supported!")
     exit(1)
 
