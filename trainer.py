@@ -121,8 +121,10 @@ class Trainer():
             y = y.to(self.device).long()
             self.optimizer.zero_grad()
 
-            # this function is implemented by the subclass
-            y_hat, loss = self.calculate_loss(x, y)
+            enable_running_stats(self.net)
+            y_hat, loss = self.calculate_loss_first(x, y)
+            disable_running_stats(self.net)
+            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             # pred = y_hat.data.max(1, keepdim=True)[1]
@@ -201,7 +203,7 @@ class Trainer():
     def save(self, epoch, name):
         torch.save({"model_state_dict": self.net.state_dict(), }, name)
 
-"""BASE TRAINING CLASS FOR TEACHER"""
+"""----------BASE TRAINING CLASS FOR TEACHER----------"""
 class BaseTrainer(Trainer):
 
     def calculate_loss(self, data, target):
@@ -209,6 +211,13 @@ class BaseTrainer(Trainer):
         # feature = self.net(data)
         output = self.net(data, target)
         # output = self.metric_fc(feature, target)
+        loss = self.loss_fun(output, target)
+        loss.backward()
+        self.optimizer.step()
+        return output, loss
+
+    def calculate_loss_first(self, data, target):
+        output = self.net(data, target)
         loss = self.loss_fun(output, target)
         loss.backward()
         self.optimizer.step_first()
