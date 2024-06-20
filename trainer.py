@@ -6,6 +6,7 @@ from torch import nn
 from tqdm import tqdm
 from torch.nn import DataParallel
 import numpy as np
+from torch.nn.modules.batchnorm import _BatchNorm
 
 from optimizer import get_optimizer, get_scheduler
 
@@ -38,6 +39,21 @@ def init_progress_bar(train_loader):
         # a trick to allow execution in environments where stderr is redirected
         t._time = lambda: 0.0
     return t
+
+def disable_running_stats(model):
+    def _disable(module):
+        if isinstance(module, _BatchNorm):
+            module.backup_momentum = module.momentum
+            module.momentum = 0
+
+    model.apply(_disable)
+
+def enable_running_stats(model):
+    def _enable(module):
+        if isinstance(module, _BatchNorm) and hasattr(module, "backup_momentum"):
+            module.momentum = module.backup_momentum
+
+    model.apply(_enable)
 
 
 class Trainer():
@@ -83,6 +99,15 @@ class Trainer():
         self.loss_fun = loss_fun
 
     def calculate_loss(self, data, target):
+        raise NotImplementedError(
+            "calculate_loss should be implemented by subclass!")
+
+    """First and Second Step Implementation for SAM"""
+    def calculate_loss_first(self, data, target):
+        raise NotImplementedError(
+            "calculate_loss should be implemented by subclass!")
+
+    def calculate_loss_second(self, data, target):
         raise NotImplementedError(
             "calculate_loss should be implemented by subclass!")
 
@@ -176,7 +201,7 @@ class Trainer():
     def save(self, epoch, name):
         torch.save({"model_state_dict": self.net.state_dict(), }, name)
 
-
+"""BASE TRAINING CLASS FOR TEACHER"""
 class BaseTrainer(Trainer):
 
     def calculate_loss(self, data, target):
@@ -186,7 +211,7 @@ class BaseTrainer(Trainer):
         # output = self.metric_fc(feature, target)
         loss = self.loss_fun(output, target)
         loss.backward()
-        self.optimizer.step()
+        self.optimizer.step_first()
         return output, loss
 
 
