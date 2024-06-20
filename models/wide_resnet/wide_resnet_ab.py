@@ -245,8 +245,8 @@ def WRN40_4(num_classes=7):
     return WideResNet(depth=40, num_classes=num_classes, widen_factor=4)
 
 def test():
-    net = WRN40_4()
-    y = net(torch.randn(64, 3, 48, 48))
+    net = WRN40_4(num_classes=8)
+    y = net(torch.randn(64, 1, 48, 48))
     print(y.size())
 
 test()
