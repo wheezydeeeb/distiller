@@ -285,7 +285,7 @@ def run_benchmarks(modes, params, s_name, t_name):
 
             """No need to load teacher during NOKD and MULTIKD (PREDEFINED)"""
             # t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
-            t_net = "MODE_NOKD"
+            t_net = "MODE_NOKD_MULTIKD" # Placeholder during NOKD, MULTIKD
 
             # load the student and create a results directory for the mode
             s_net = setup_student(s_name, params)
