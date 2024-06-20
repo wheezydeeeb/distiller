@@ -66,12 +66,12 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
         print("Loading FER2013...")
         dataset = torchvision.datasets.ImageFolder
         normalize = transforms.Normalize(
-            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            mean=[0.5], std=[0.5])
     elif num_classes == 8:
         print("Loading FERPlus...")
         dataset = torchvision.datasets.ImageFolder
         normalize = transforms.Normalize(
-            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            mean=[0.5], std=[0.5])
 
     train_transform = transforms.Compose([
         # transforms.RandomCrop(32, padding=4),
