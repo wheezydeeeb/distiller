@@ -66,7 +66,7 @@ model_dict = {
 
 def create_model(name, num_classes, device):
     model_cls = model_dict[name]
-    print(f"Building model {name}...", end='')
+    print(f"Building model {name}... num_classes {num_classes}", end='')
     model = model_cls(num_classes=num_classes)
     total_params = sum(p.numel() for p in model.parameters())
     layers = len(list(model.modules()))
