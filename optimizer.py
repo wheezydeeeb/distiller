@@ -21,6 +21,13 @@ def get_optimizer(optim_str, params):
         optim_args["amsbound"] = True
         optim_args["final_lr"] = 0.1
         return AdaBound, optim_args
+    elif optim_str.lower() == "friendlysam":
+        optim_args["base_optimizer"] = optim.SGD
+        optim_args["adaptive"] = False
+        optim_args["momentum"] = params["momentum"]
+        optim_args["weight_decay"] = params["weight_decay"]
+        optim_args["nesterov"] = False
+        return FriendlySAM, optim_args
     print("Requested optimizer not supported!")
     exit(1)
 
