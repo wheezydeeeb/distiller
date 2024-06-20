@@ -283,7 +283,7 @@ def run_benchmarks(modes, params, s_name, t_name):
             mode = mode.lower()
             params_s = params.copy()
 
-            """No need to load teacher during NOKD"""
+            """No need to load teacher during NOKD and MULTIKD (PREDEFINED)"""
             # t_net = util.load_checkpoint(t_net, best_teacher, params["device"])
             t_net = "MODE_NOKD"
 
