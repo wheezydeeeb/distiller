@@ -220,7 +220,14 @@ class BaseTrainer(Trainer):
         output = self.net(data, target)
         loss = self.loss_fun(output, target)
         loss.backward()
-        self.optimizer.step_first()
+        self.optimizer.first_step()
+        return output, loss
+
+    def calculate_loss_second(self, data, target):
+        output = self.net(data, target)
+        loss = self.loss_fun(output, target)
+        loss.backward()
+        self.optimizer.second_step()
         return output, loss
 
 
