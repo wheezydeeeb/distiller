@@ -42,7 +42,7 @@ def parse_arguments():
     parser.add_argument("--optimizer", default="sgd",
                         dest="optimizer", type=str,
                         help="Which optimizer to use")
-    parser.add_argument("--scheduler", default="multisteplr",
+    parser.add_argument("--scheduler", default="cosannlr",
                         dest="scheduler", type=str,
                         help="Which scheduler to use")
     parser.add_argument("--teacher-checkpoint", default="",
