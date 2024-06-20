@@ -119,10 +119,11 @@ class Trainer():
         for batch_idx, (x, y) in enumerate(self.train_loader):
             x = x.to(self.device)
             y = y.to(self.device).long()
+            
             self.optimizer.zero_grad()
-
             enable_running_stats(self.net)
             y_hat, loss = self.calculate_loss_first(x, y)
+            self.optimizer.zero_grad()
             disable_running_stats(self.net)
             y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
@@ -219,14 +220,14 @@ class BaseTrainer(Trainer):
     def calculate_loss_first(self, data, target):
         output = self.net(data, target)
         loss = self.loss_fun(output, target)
-        loss.backward()
+        loss.mean().backward()
         self.optimizer.first_step()
         return output, loss
 
     def calculate_loss_second(self, data, target):
         output = self.net(data, target)
         loss = self.loss_fun(output, target)
-        loss.backward()
+        loss.mean().backward()
         self.optimizer.second_step()
         return output, loss
 
