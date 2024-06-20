@@ -52,7 +52,10 @@ def get_scheduler(sched_str, params):
         # use a constant scheduler, i.e. no scheduler
         return DummyScheduler, sched_args
     elif sched_str.lower() == "cosannlr":
-        
+        sched_args["T_max"] = params["epochs"]
+        sched_args["eta_min"] = 0
+        sched_args["last_epoch"] = -1
+        return optim.lr_scheduler.CosineAnnealingLR, sched_args
 
     print("Requested optimizer not supported!")
     exit(1)
