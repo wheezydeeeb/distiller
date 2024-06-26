@@ -121,11 +121,12 @@ class Trainer():
             y = y.to(self.device).long()
             
             self.optimizer.zero_grad()
-            enable_running_stats(self.net)
-            y_hat, loss = self.calculate_loss_first(x, y)
-            self.optimizer.zero_grad()
-            disable_running_stats(self.net)
-            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
+            # enable_running_stats(self.net)
+            # y_hat, loss = self.calculate_loss_first(x, y)
+            y_hat, loss = self.calculate_loss(x, y)
+            # self.optimizer.zero_grad()
+            # disable_running_stats(self.net)
+            # y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             # pred = y_hat.data.max(1, keepdim=True)[1]
@@ -206,9 +207,7 @@ class BaseTrainer(Trainer):
 
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
-        # feature = self.net(data)
         output = self.net(data, target)
-        # output = self.metric_fc(feature, target)
         loss = self.loss_fun(output, target)
         loss.backward()
         self.optimizer.step()
