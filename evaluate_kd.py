@@ -140,6 +140,7 @@ def test_multikd(s_net, t_net1, params):
     # t_net1 = freeze_teacher(t_net1)
     print("---------- Training MULTIKD -------")
     kd_config = params.copy()
+    print(f"Number of Classes --> {kd_config['num_classes']}")
     params["t2_name"] = "WRN22_8"
     t_net2 = create_model(
         params["t2_name"], params["num_classes"], params["device"])
