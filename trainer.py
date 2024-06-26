@@ -227,7 +227,7 @@ class BaseTrainer(Trainer):
         self.optimizer.second_step()
         return output, loss
 
-
+"""----------BASE DISILLATION CLASS----------"""
 class KDTrainer(Trainer):
     def __init__(self, s_net, t_net, config):
         super(KDTrainer, self).__init__(s_net, config)
