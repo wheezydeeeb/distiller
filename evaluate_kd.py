@@ -141,14 +141,14 @@ def test_multikd(s_net, t_net1, params):
     print("---------- Training MULTIKD -------")
     kd_config = params.copy()
     print(f"Number of Classes --> {kd_config['num_classes']}")
-    params["t2_name"] = "WRN22_8"
+    params["t2_name"] = "WRN28_1"
     t_net2 = create_model(
         params["t2_name"], params["num_classes"], params["device"])
     t_net2 = util.load_checkpoint(
-        t_net2, "pretrained/fer2013/WRN22_8_68696.pth.tar")
+        t_net2, "/home/khincho/distillers/distiller/results/FER+/WRN28_1_SPHERED_FL2_SDG_CANNLR/ferplus/nokd/WRN28_1_best.pth.tar")
     t_net2 = freeze_teacher(t_net2)
 
-    params["t3_name"] = "WRN28_2"
+    params["t3_name"] = "WRN40_1"
     t_net3 = create_model(
         params["t3_name"], params["num_classes"], params["device"])
     t_net3 = util.load_checkpoint(
