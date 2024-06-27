@@ -121,12 +121,12 @@ class Trainer():
             y = y.to(self.device).long()
             
             self.optimizer.zero_grad()
-            # enable_running_stats(self.net)
-            # y_hat, loss = self.calculate_loss_first(x, y)
-            y_hat, loss = self.calculate_loss(x, y)
-            # self.optimizer.zero_grad()
-            # disable_running_stats(self.net)
-            # y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
+            enable_running_stats(self.net)
+            y_hat, loss = self.calculate_loss_first(x, y)
+            # y_hat, loss = self.calculate_loss(x, y)
+            self.optimizer.zero_grad()
+            disable_running_stats(self.net)
+            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             # pred = y_hat.data.max(1, keepdim=True)[1]
