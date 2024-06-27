@@ -330,6 +330,30 @@ class MultiTrainer(KDTrainer):
         self.optimizer.step()
         return out_s, loss
 
+    def calculate_loss_first(self, data, target):
+        lambda_ = self.config["lambda_student"]
+        T = self.config["T_student"]
+        out_s = self.s_net(data, target)
+        loss = self.loss_fun(out_s, target)
+        loss_kd_list = [self.kd_loss(out_s, t_net(data, target), target) for t_net in self.t_nets]
+        loss_kd = max(loss_kd_list)
+        loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd
+        loss.mean().backward()
+        self.optimizer.first_step()
+        return out_s, loss
+
+    def calculate_loss_second(self, data, target):
+        lambda_ = self.config["lambda_student"]
+        T = self.config["T_student"]
+        out_s = self.s_net(data, target)
+        loss = self.loss_fun(out_s, target)
+        loss_kd_list = [self.kd_loss(out_s, t_net(data, target), target) for t_net in self.t_nets]
+        loss_kd = max(loss_kd_list)
+        loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd
+        loss.mean().backward()
+        self.optimizer.second_step()
+        return out_s, loss
+
 
 class BlindTrainer(KDTrainer):
     def __init__(self, s_net, t_net, config):
