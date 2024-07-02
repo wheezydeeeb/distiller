@@ -4,6 +4,7 @@ import math
 import torch.nn.functional as F
 from torch import nn
 from tqdm import tqdm
+from torch import optim
 from torch.nn import DataParallel
 import numpy as np
 from torch.nn.modules.batchnorm import _BatchNorm
@@ -24,6 +25,28 @@ class FocalLoss(nn.Module):
         p = torch.exp(-logp)
         loss = (1 - p) ** self.gamma * logp
         return loss.mean()
+
+class WeightEMA(optim.Optimizer):
+    def _init_(self, model, ema_model, args, alpha=0.999):
+        self.model = model
+        self.ema_model = ema_model
+        self.alpha = alpha
+        self.params = list(model.state_dict().values())
+        self.ema_params = list(ema_model.state_dict().values())
+        self.wd = 0.02 * args.lr
+
+        for param, ema_param in zip(self.params, self.ema_params):
+            param.data.copy_(ema_param.data)
+
+    def step(self):
+        one_minus_alpha = 1.0 - self.alpha
+        for param, ema_param in zip(self.params, self.ema_params):
+            if ema_param.dtype==torch.float32:
+                ema_param.mul_(self.alpha)
+                ema_param.add_(param * one_minus_alpha)
+                # customized weight decay
+                param.mul_(1 - self.wd)
+
 
 def init_progress_bar(train_loader):
     batch_size = train_loader.batch_size
@@ -68,12 +91,14 @@ class Trainer():
         self.net = net
         self.device = config["device"]
         self.name = config["test_name"]
+
         # Retrieve preconfigured optimizers and schedulers for all runs
         optim = config["optim"]
         sched = config["sched"]
         self.optim_cls, self.optim_args = get_optimizer(optim, config)
         self.sched_cls, self.sched_args = get_scheduler(sched, config)
         self.optimizer = self.optim_cls(net.parameters(), **self.optim_args)
+        self.ema_optimizer = 
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         self.train_loader = config["train_loader"]
