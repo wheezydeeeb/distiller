@@ -13,6 +13,8 @@ def get_optimizer(optim_str, params):
         optim_args["weight_decay"] = params["weight_decay"]
         optim_args["nesterov"] = True
         return optim.SGD, optim_args
+    elif optim_str.lower() == "adam":
+        return optim.Adam, optim_args
     elif optim_str.lower() == "novograd":
         optim_args["weight_decay"] = params["weight_decay"]
         return NovoGrad, optim_args
