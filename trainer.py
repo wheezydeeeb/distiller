@@ -98,7 +98,6 @@ class Trainer():
         self.optim_cls, self.optim_args = get_optimizer(optim, config)
         self.sched_cls, self.sched_args = get_scheduler(sched, config)
         self.optimizer = self.optim_cls(net.parameters(), **self.optim_args)
-        self.ema_optimizer = 
         self.scheduler = self.sched_cls(self.optimizer, **self.sched_args)
 
         self.train_loader = config["train_loader"]
@@ -319,6 +318,9 @@ class MultiTrainer(KDTrainer):
         # the student net is the base net
         self.s_net = self.net
         self.t_nets = t_nets
+
+        # EMA Optimizer Definition
+        self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, params=config)
 
     def kd_loss(self, out_s, out_t, target):
         T = self.config["T_student"]
