@@ -28,13 +28,13 @@ class FocalLoss(nn.Module):
 
 # EMA Optimizer for distillation framework
 class WeightEMA(optim.Optimizer):
-    def __init__(self, model, ema_model, args, alpha=0.999):
+    def __init__(self, model, ema_model, lr, alpha=0.999):
         self.model = model
         self.ema_model = ema_model
         self.alpha = alpha
         self.params = list(model.state_dict().values())
         self.ema_params = list(ema_model.state_dict().values())
-        self.wd = 0.02 * args.learning_rate
+        self.wd = 0.02 * lr
 
         for param, ema_param in zip(self.params, self.ema_params):
             param.data.copy_(ema_param.data)
@@ -319,9 +319,8 @@ class MultiTrainer(KDTrainer):
         # the student net is the base net
         self.s_net = self.net
         self.t_nets = t_nets
-
         # EMA Optimizer Definition
-        self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, args=config)
+        self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, lr=config["learning_rate"])
 
     def kd_loss(self, out_s, out_t, target):
         T = self.config["T_student"]
