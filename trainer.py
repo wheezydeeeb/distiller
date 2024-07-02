@@ -356,6 +356,9 @@ class MultiTrainer(KDTrainer):
     def calculate_loss_first(self, data, target):
         lambda_ = self.config["lambda_student"]
         T = self.config["T_student"]
+
+        print(f"list(self.s_net.state_dict().values())[0].dtype")
+
         out_s = self.s_net(data, target)
         loss = self.loss_fun(out_s, target)
         loss_kd_list = [self.kd_loss(out_s, t_net(data, target), target) for t_net in self.t_nets]
