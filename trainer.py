@@ -33,7 +33,7 @@ class WeightEMA(optim.Optimizer):
         self.alpha = alpha
         self.params = list(model.state_dict().values())
         self.ema_params = list(ema_model.state_dict().values())
-        self.wd = 0.02 * args.lr
+        self.wd = 0.02 * args.learning_rate
 
         for param, ema_param in zip(self.params, self.ema_params):
             param.data.copy_(ema_param.data)
@@ -320,7 +320,7 @@ class MultiTrainer(KDTrainer):
         self.t_nets = t_nets
 
         # EMA Optimizer Definition
-        self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, params=config)
+        self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, args=config)
 
     def kd_loss(self, out_s, out_t, target):
         T = self.config["T_student"]
