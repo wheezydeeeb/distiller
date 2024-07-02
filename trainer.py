@@ -354,6 +354,8 @@ class MultiTrainer(KDTrainer):
         loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd
         loss.backward()
         self.optimizer.step()
+        # Stepping the ema_optimizer
+        self.ema_optimizer.step()
         return out_s, loss
 
     def calculate_loss_first(self, data, target):

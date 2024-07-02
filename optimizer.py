@@ -26,6 +26,7 @@ def get_optimizer(optim_str, params):
         optim_args["final_lr"] = 0.1
         return AdaBound, optim_args
     elif optim_str.lower() == "friendlysam":
+        print(f"Using FSAM+SGD Optimizer")
         optim_args["base_optimizer"] = optim.SGD
         optim_args["adaptive"] = False
         optim_args["momentum"] = params["momentum"]
