@@ -9,6 +9,7 @@ def get_optimizer(optim_str, params):
     optim_args["lr"] = params["learning_rate"]
 
     if optim_str.lower() == "sgd":
+        print(f"Using SGD Optimizer")
         optim_args["momentum"] = params["momentum"]
         optim_args["weight_decay"] = params["weight_decay"]
         optim_args["nesterov"] = True
