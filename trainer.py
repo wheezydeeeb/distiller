@@ -357,7 +357,7 @@ class MultiTrainer(KDTrainer):
         lambda_ = self.config["lambda_student"]
         T = self.config["T_student"]
 
-        print(f"list(self.s_net.state_dict().values())[0].dtype")
+        print(f"{list(self.s_net.state_dict().values())[0].dtype}")
 
         out_s = self.s_net(data, target)
         loss = self.loss_fun(out_s, target)
