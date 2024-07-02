@@ -151,7 +151,7 @@ class Trainer():
             y_hat, loss = self.calculate_loss(x, y)
             # self.optimizer.zero_grad()
             # disable_running_stats(self.net)
-            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
+            # y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             total_loss += loss
