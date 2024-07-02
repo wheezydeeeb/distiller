@@ -129,13 +129,9 @@ class Trainer():
             y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
-            # pred = y_hat.data.max(1, keepdim=True)[1]
-            # total_correct += pred.eq(y.data.view_as(pred)).sum()
             total_loss += loss
-            # curr_acc = 100.0 * (total_correct / float(len_train_set))
             curr_loss = (total_loss / float(batch_idx))
 
-            # Metric Tracking for ArcLoss Implementation
             y_hat = y_hat.data.cpu().numpy()
             y_hat = np.argmax(y_hat, axis=1)
             y = y.data.cpu().numpy()
