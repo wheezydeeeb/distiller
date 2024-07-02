@@ -26,6 +26,7 @@ class FocalLoss(nn.Module):
         loss = (1 - p) ** self.gamma * logp
         return loss.mean()
 
+# EMA Optimizer for distillation framework
 class WeightEMA(optim.Optimizer):
     def __init__(self, model, ema_model, args, alpha=0.999):
         self.model = model
