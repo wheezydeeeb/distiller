@@ -27,7 +27,7 @@ class FocalLoss(nn.Module):
         return loss.mean()
 
 class WeightEMA(optim.Optimizer):
-    def _init_(self, model, ema_model, args, alpha=0.999):
+    def __init__(self, model, ema_model, args, alpha=0.999):
         self.model = model
         self.ema_model = ema_model
         self.alpha = alpha
