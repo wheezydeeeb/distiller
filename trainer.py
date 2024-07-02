@@ -320,6 +320,7 @@ class MultiTrainer(KDTrainer):
         self.s_net = self.net
         self.t_nets = t_nets
         # EMA Optimizer Definition
+        print(f"Using Weight EMA Optimizer")
         self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, lr=config["learning_rate"])
 
     def kd_loss(self, out_s, out_t, target):
