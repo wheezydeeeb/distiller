@@ -149,12 +149,12 @@ class Trainer():
             y = y.to(self.device).long()
             
             self.optimizer.zero_grad()
-            # enable_running_stats(self.net)
-            # y_hat, loss = self.calculate_loss_first(x, y)
-            y_hat, loss = self.calculate_loss(x, y)
-            # self.optimizer.zero_grad()
-            # disable_running_stats(self.net)
-            # y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
+            enable_running_stats(self.net)
+            y_hat, loss = self.calculate_loss_first(x, y)
+            # y_hat, loss = self.calculate_loss(x, y)
+            self.optimizer.zero_grad()
+            disable_running_stats(self.net)
+            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             total_loss += loss
@@ -337,8 +337,8 @@ class MultiTrainer(KDTrainer):
         self.t_nets = t_nets
 
         # EMA Optimizer Definition
-        print(f"Using Weight EMA Optimizer")
-        self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, lr=config["learning_rate"])
+        # print(f"Using Weight EMA Optimizer")
+        # self.ema_optimizer = WeightEMA(model=self.s_net, ema_model=self.s_net, lr=config["learning_rate"])
 
 
     def kd_loss(self, out_s, out_t, target):
