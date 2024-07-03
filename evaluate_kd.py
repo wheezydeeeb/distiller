@@ -99,6 +99,17 @@ def setup_student(s_name, params):
 
     # Loading the msceleb checkpoint for weight initialization
     checkpoint = torch.load("/home1/ai20resch16001/data/resnet18_msceleb.pth")
+    # handle both dataparallel and normal models
+    model_tmp_dict = OrderedDict()
+    for name, value in checkpoint["model_state_dict"].items():
+        if name.startswith("module."):
+            name = name[7:]
+        model_tmp_dict[name] = value
+
+    if isinstance(s_net, torch.nn.DataParallel):
+        s_net.module.load_state_dict(model_tmp_dict)
+    else:
+        s_net.load_state_dict(model_tmp_dict)
     return s_net
 
 
