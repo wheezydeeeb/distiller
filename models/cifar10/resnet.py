@@ -151,7 +151,7 @@ class ResNet(nn.Module):
             self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
-    def forward(self, x, is_feat=False, use_relu=True, labels=None):
+    def forward(self, x, labels=None, is_feat=False, use_relu=True):
         out = self.conv1(x)
         out = self.bn1(out)
         if use_relu:
