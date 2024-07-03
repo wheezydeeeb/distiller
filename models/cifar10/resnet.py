@@ -130,7 +130,7 @@ class ResNet(nn.Module):
         super(ResNet, self).__init__()
         self.in_planes = 64
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=3,
+        self.conv1 = nn.Conv2d(1, 64, kernel_size=3,
                                stride=1, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.layer1 = self._make_layer(block, 64, num_blocks[0], stride=1)
@@ -363,7 +363,7 @@ def resnet152(**kwargs):
 
 def test():
     net = resnet18()
-    y = net(torch.randn(1, 3, 48, 48))
+    y = net(torch.randn(1, 1, 48, 48))
     print(y.size())
 
 test()
