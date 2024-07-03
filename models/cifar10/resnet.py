@@ -150,7 +150,7 @@ class ResNet(nn.Module):
             self.in_planes = planes * block.expansion
         return nn.Sequential(*layers)
 
-    def forward(self, x, is_feat=False, use_relu=True):
+    def forward(self, x, is_feat=False, use_relu=True, labels=None):
         out = self.conv1(x)
         out = self.bn1(out)
         if use_relu:
@@ -170,10 +170,10 @@ class ResNet(nn.Module):
         pool = F.avg_pool2d(feat4, 6)
         pool = pool.view(pool.size(0), -1)
         out = self.linear(pool)
-
+        if labels is not None:
+            return self.metric_fc(out, labels)
         if is_feat:
             return[feat1, feat2, feat3, feat4], pool, out
-
         return out
 
     def get_bn_before_relu(self):
