@@ -152,14 +152,14 @@ def test_multikd(s_net, t_net1, params):
     t_net2 = create_model(
         params["t2_name"], params["num_classes"], params["device"])
     t_net2 = util.load_checkpoint(
-        t_net2, "/home/khincho/distillers/distiller/results/TEACHERS/FER+/WRN28_1_SPHERED_FL2_SGD_MULTISTEPLR/ferplus/nokd/WRN28_1_best.pth.tar")
+        t_net2, "/home/khincho/distillers/distiller/results/TEACHERS/FER+/WRN28_1_SPHERED_FL2_SGD_MULTISTEPLR/ferplus/WRN28_1_best.pth.tar")
     t_net2 = freeze_teacher(t_net2)
 
     params["t3_name"] = "WRN40_1"
     t_net3 = create_model(
         params["t3_name"], params["num_classes"], params["device"])
     t_net3 = util.load_checkpoint(
-        t_net3, "/home/khincho/distillers/distiller/results/TEACHERS/FER+/WRN40_1_SPHERED_FL2_SGD_MULTISTEPLR/ferplus/nokd/WRN40_1_best.pth.tar")
+        t_net3, "/home/khincho/distillers/distiller/results/TEACHERS/FER+/WRN40_1_SPHERED_FL2_SGD_MULTISTEPLR/ferplus/WRN40_1_best.pth.tar")
     t_net3 = freeze_teacher(t_net3)
 
     t_nets = [t_net2, t_net3]
