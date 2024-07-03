@@ -100,7 +100,7 @@ def setup_student(s_name, params):
 
     # Loading the msceleb checkpoint for weight initialization
     checkpoint = torch.load("/home/khincho/data/resnet18_msceleb.pth")
-    s_net.module.load_state_dict(checkpoint['state_dict'], strict=True)
+    s_net.module.load_state_dict(checkpoint['state_dict'])
     print(f"Successfully loaded resnet18_msceleb model weights")
         
     return s_net
