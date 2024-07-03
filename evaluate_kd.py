@@ -110,6 +110,7 @@ def setup_student(s_name, params):
         s_net.module.load_state_dict(model_tmp_dict)
     else:
         s_net.load_state_dict(model_tmp_dict)
+    print(f"Successfully loaded resnet18_msceleb model weights")
         
     return s_net
 
