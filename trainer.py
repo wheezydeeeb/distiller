@@ -392,7 +392,7 @@ class MultiTrainer(KDTrainer):
         loss.mean().backward()
         self.optimizer.first_step()
         # Stepping the ema_optimizer
-        self.ema_optimizer.step()
+        # self.ema_optimizer.step()
         return out_s, loss
 
     def calculate_loss_second(self, data, target):
