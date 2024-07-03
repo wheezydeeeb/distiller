@@ -2,6 +2,8 @@ import sys
 import torch
 import math
 import torch.nn.functional as F
+import time
+from datetime import timedelta
 from torch import nn
 from tqdm import tqdm
 from torch import optim
@@ -175,6 +177,10 @@ class Trainer():
 
         best_acc = 0
         t_bar = init_progress_bar(self.train_loader)
+
+        # Start timing
+        start_time = time.time()
+
         for epoch in range(epochs):
             # update progress bar
             t_bar.reset()
@@ -190,6 +196,15 @@ class Trainer():
             if self.scheduler:
                 self.scheduler.step()
             self.acc_file.write(f"{train_acc},{val_acc},{train_loss},{val_loss}\n")
+
+        # End timing
+        end_time = time.time()
+        # Calculate the duration
+        duration = end_time - start_time
+        # Convert duration to hours, minutes, and seconds
+        formatted_duration = str(timedelta(seconds=duration))
+        self.acc_file.write(f"{formatted_duration}\n")
+
         tqdm.clear(t_bar)
         t_bar.close()
         self.acc_file.close()
