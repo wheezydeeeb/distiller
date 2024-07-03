@@ -364,7 +364,7 @@ def resnet152(**kwargs):
 
 def test():
     net = resnet18()
-    y = net(torch.randn(1, 1, 48, 48))
+    y = net(torch.randn(64, 1, 48, 48))
     print(y.size())
 
 test()
