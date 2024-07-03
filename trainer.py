@@ -149,12 +149,12 @@ class Trainer():
             y = y.to(self.device).long()
             
             self.optimizer.zero_grad()
-            enable_running_stats(self.net)
-            y_hat, loss = self.calculate_loss_first(x, y)
-            # y_hat, loss = self.calculate_loss(x, y)
-            self.optimizer.zero_grad()
-            disable_running_stats(self.net)
-            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
+            # enable_running_stats(self.net)
+            # y_hat, loss = self.calculate_loss_first(x, y)
+            y_hat, loss = self.calculate_loss(x, y)
+            # self.optimizer.zero_grad()
+            # disable_running_stats(self.net)
+            # y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             total_loss += loss
@@ -222,7 +222,7 @@ class Trainer():
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device).long()
-                output = self.net(images, labels)
+                output = self.net(images)
                 # Standard Learning Loss ( Classification Loss)
                 loss += self.loss_fun(output, labels)
                 # get the index of the max log-probability
@@ -245,7 +245,7 @@ class BaseTrainer(Trainer):
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
         output = self.net(data, target)
-        loss = self.loss_fun(output, target)
+        loss = self.loss_fun(output)
         loss.backward()
         self.optimizer.step()
         return output, loss
