@@ -32,8 +32,8 @@ class WeightEMA(optim.Optimizer):
         self.model = model
         self.ema_model = ema_model
         self.alpha = alpha
-        self.params = list(model.state_dict().values())
-        self.ema_params = list(ema_model.state_dict().values())
+        self.params = list(model.module.state_dict().values())
+        self.ema_params = list(ema_model.module.state_dict().values())
         self.wd = 0.02 * lr
 
         for param, ema_param in zip(self.params, self.ema_params):
