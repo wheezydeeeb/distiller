@@ -99,9 +99,9 @@ def setup_student(s_name, params):
     s_net = create_model(s_name, num_classes, params["device"])
 
     # Loading the msceleb checkpoint for weight initialization
-    checkpoint = torch.load("/home/khincho/data/resnet18_msceleb.pth")
-    s_net.module.load_state_dict(checkpoint['state_dict'])
-    print(f"Successfully loaded resnet18_msceleb model weights")
+    # checkpoint = torch.load("/home/khincho/data/resnet18_msceleb.pth")
+    # s_net.module.load_state_dict(checkpoint['state_dict'])
+    # print(f"Successfully loaded resnet18_msceleb model weights")
         
     return s_net
 
