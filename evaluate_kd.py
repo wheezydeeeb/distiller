@@ -96,6 +96,9 @@ def setup_student(s_name, params):
     # Student Model
     num_classes = params["num_classes"]
     s_net = create_model(s_name, num_classes, params["device"])
+
+    # Loading the msceleb checkpoint for weight initialization
+    checkpoint = torch.load("/home1/ai20resch16001/data/resnet18_msceleb.pth")
     return s_net
 
 
