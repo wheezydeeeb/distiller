@@ -223,7 +223,7 @@ class Trainer():
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device).long()
-                output = self.net(images)
+                output = self.net(images, labels)
                 # Standard Learning Loss ( Classification Loss)
                 loss += self.loss_fun(output, labels)
                 # get the index of the max log-probability
@@ -245,7 +245,7 @@ class BaseTrainer(Trainer):
 
     def calculate_loss(self, data, target):
         # Standard Learning Loss ( Classification Loss)
-        output = self.net(data)
+        output = self.net(data, target)
         loss = self.loss_fun(output, target)
         loss.backward()
         self.optimizer.step()
