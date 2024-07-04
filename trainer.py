@@ -89,8 +89,9 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        # self.loss_fun = nn.CrossEntropyLoss()
-        self.loss_fun = FocalLoss(gamma=2)
+        self.loss_fun = nn.CrossEntropyLoss()
+        print(f"Using Cross Entropy Loss")
+        # self.loss_fun = FocalLoss(gamma=2)
 
         self.net = net
         self.device = config["device"]
@@ -149,12 +150,12 @@ class Trainer():
             y = y.to(self.device).long()
             
             self.optimizer.zero_grad()
-            # enable_running_stats(self.net)
-            # y_hat, loss = self.calculate_loss_first(x, y)
+            enable_running_stats(self.net)
+            y_hat, loss = self.calculate_loss_first(x, y)
             y_hat, loss = self.calculate_loss(x, y)
-            # self.optimizer.zero_grad()
-            # disable_running_stats(self.net)
-            # y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
+            self.optimizer.zero_grad()
+            disable_running_stats(self.net)
+            y_hat_adv, loss_adv = self.calculate_loss_second(x, y)
 
             # Metric tracking boilerplate
             total_loss += loss

@@ -168,7 +168,7 @@ class WideResNet(nn.Module):
 
         """Changes introduced for metric function incorporation"""
         self.linear = nn.Linear(n_channels[3], num_classes)
-        # self.metric_fc = SphereProduct(in_features=512, out_features = num_classes)
+        self.metric_fc = SphereProduct(in_features=512, out_features = num_classes)
         self.n_channels = n_channels
 
         for m in self.modules():
@@ -190,8 +190,8 @@ class WideResNet(nn.Module):
         out = F.avg_pool2d(out, 8)
         out = out.view(-1, self.n_channels[-1])
         out = self.linear(out)
-        # if labels is not None:
-        #     return self.metric_fc(out, labels)
+        if labels is not None:
+            return self.metric_fc(out, labels)
         return out
 
     def get_channel_num(self):
@@ -250,5 +250,5 @@ def test():
     y = net(torch.randn(64, 1, 48, 48))
     print(y.size())
 
-test()
+# test()
 
