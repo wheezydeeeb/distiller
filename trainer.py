@@ -89,9 +89,12 @@ class Trainer():
         """ ----------------------------
         LOSS FUNCTION INITIALIZATION
         -----------------------------"""
-        self.loss_fun = nn.CrossEntropyLoss()
-        print(f"Using Cross Entropy Loss")
-        # self.loss_fun = FocalLoss(gamma=2)
+        # self.loss_fun = nn.CrossEntropyLoss()
+        # print(f"Using Cross Entropy Loss")
+
+        gm = 2
+        self.loss_fun = FocalLoss(gamma=gm)
+        print(f"Using Focal Loss with gamma = {gm}")
 
         self.net = net
         self.device = config["device"]
