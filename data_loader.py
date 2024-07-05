@@ -49,7 +49,7 @@ def load_cifar_10_1():
     return imagedata, torch.Tensor(labels).long()
 
 
-def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/dataset/", batch_size=128,
+def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/dataset/", batch_size=64,
               use_cifar_10_1=False):
 
     if num_classes == 10:
@@ -72,6 +72,8 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
         dataset = torchvision.datasets.ImageFolder
         normalize = transforms.Normalize(
             mean=[0.5], std=[0.5])
+
+    print(f"BATCH_SIZE = {batch_size}")
 
     # Transforms for RAF-DB dataset
     train_transform = transforms.Compose([
