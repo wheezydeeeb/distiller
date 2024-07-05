@@ -21,7 +21,7 @@ class FocalLoss(nn.Module):
         self.gamma = gamma
         self.eps = eps
         self.ce = nn.CrossEntropyLoss()
-        print(f"Using Focal Loss")
+        print(f"Using Focal Loss with gamma = {gamma}")
 
     def forward(self, input, target):
         logp = self.ce(input, target)
@@ -92,9 +92,7 @@ class Trainer():
         # self.loss_fun = nn.CrossEntropyLoss()
         # print(f"Using Cross Entropy Loss")
 
-        gm = 2
-        self.loss_fun = FocalLoss(gamma=gm)
-        print(f"Using Focal Loss with gamma = {gm}")
+        self.loss_fun = FocalLoss(gamma=2)
 
         self.net = net
         self.device = config["device"]
