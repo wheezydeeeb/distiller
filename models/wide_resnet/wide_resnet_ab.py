@@ -187,7 +187,7 @@ class WideResNet(nn.Module):
         out = self.layer2(out)
         out = self.layer3(out)
         out = self.relu(self.bn1(out))
-        out = F.avg_pool2d(out, 8)
+        out = F.avg_pool2d(out, 25)
         out = out.view(-1, self.n_channels[-1])
         out = self.linear(out)
         if labels is not None:
