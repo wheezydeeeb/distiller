@@ -251,8 +251,8 @@ def WRN40_4(num_classes=7):
     return WideResNet(depth=40, num_classes=num_classes, widen_factor=4)
 
 def test():
-    net = WRN40_4(num_classes=7).to("cuda")
-    y = net(torch.randn(1, 3, 224, 224).to("cuda"))
+    net = WRN40_1(num_classes=7).to("cuda")
+    y = net(torch.randn(1, 3, 100, 100).to("cuda"))
     print(y.size())
 
 test()
