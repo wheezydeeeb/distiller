@@ -167,7 +167,7 @@ class WideResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
         """Changes introduced for metric function incorporation"""
-        self.linear = nn.Linear(n_channels[3] * 7 * 7, 512)
+        self.linear = nn.Linear(n_channels[3] * 8 * 8, 512)
         self.metric_fc = SphereProduct(in_features=512, out_features = num_classes)
         self.n_channels = n_channels
 
@@ -252,7 +252,7 @@ def WRN40_4(num_classes=7):
 
 def test():
     net = WRN40_4(num_classes=7).to("cuda")
-    y = net(torch.randn(1, 3, 224, 224).to("cuda"))
+    y = net(torch.randn(32, 3, 224, 224).to("cuda"))
     print(y.size())
 
 test()
