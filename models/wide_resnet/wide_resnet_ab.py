@@ -250,7 +250,7 @@ def WRN40_4(num_classes=7):
 
 def test():
     net = WRN40_4(num_classes=7)
-    y = net(torch.randn(64, 3, 224, 224))
+    y = net(torch.randn(64, 3, 100, 100))
     print(y.size())
 
 test()
