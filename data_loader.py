@@ -73,12 +73,15 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
         normalize = transforms.Normalize(
             mean=[0.5], std=[0.5])
 
+    # Transforms for RAF-DB dataset
     train_transform = transforms.Compose([
         # transforms.RandomCrop(32, padding=4),
         # transforms.Grayscale(num_output_channels=1),
-        transforms.Resize([100, 100]),
+        transforms.ToPILImage(),
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
         normalize,
+        transforms.RandomErasing(scale=(0.02, 0.1))
     ])
 
     # trainset = dataset(root=dataset_dir, train=True,
@@ -88,7 +91,8 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
 
     test_transform = transforms.Compose([
         # transforms.Grayscale(num_output_channels=1),
-        transforms.Resize([100, 100]),
+        transforms.ToPILImage(),
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
         normalize,
     ])
