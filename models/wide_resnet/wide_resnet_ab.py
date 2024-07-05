@@ -22,7 +22,7 @@ class SphereProduct(nn.Module):
         self.LambdaMin = 5.0
         self.iter = 0
         self.weight = nn.Parameter(torch.FloatTensor(out_features, in_features))
-        nn.init.xavier_uniform(self.weight)
+        nn.init.xavier_uniform_(self.weight)
         print(f"Using Sphere Product")
 
         # duplication formula
