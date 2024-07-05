@@ -151,7 +151,7 @@ class WideResNet(nn.Module):
         n = (depth - 4) / 6
         block = BasicBlock
         # 1st conv before any network block
-        self.conv1 = nn.Conv2d(1, n_channels[0], kernel_size=3, stride=1,
+        self.conv1 = nn.Conv2d(3, n_channels[0], kernel_size=3, stride=1,
                                padding=1, bias=False)
         # 1st block
         self.layer1 = NetworkBlock(
@@ -246,8 +246,8 @@ def WRN40_4(num_classes=7):
     return WideResNet(depth=40, num_classes=num_classes, widen_factor=4)
 
 def test():
-    net = WRN40_4(num_classes=8)
-    y = net(torch.randn(64, 1, 48, 48))
+    net = WRN40_4(num_classes=7)
+    y = net(torch.randn(64, 3, 100, 100))
     print(y.size())
 
 test()
