@@ -102,9 +102,9 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
                           download=True,
                           transform=test_transform)
     elif num_classes == 7:
-        testset = dataset("/home/khincho/data/FERPlus/val/", transform=test_transform)
+        testset = dataset("/home/khincho/data/RAF-DB/val/", transform=test_transform)
     elif num_classes == 8:
-        testset = dataset("/home/khincho/data/FERPlus/val/", transform=test_transform)
+        testset = dataset("/home/khincho/data/RAF-DB/val/", transform=test_transform)
 
     train_loader = torch.utils.data.DataLoader(trainset,
                                                batch_size=batch_size,
