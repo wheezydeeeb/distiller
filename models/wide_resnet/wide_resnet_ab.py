@@ -189,7 +189,7 @@ class WideResNet(nn.Module):
         out = self.relu(self.bn1(out))
 
         # Average pooling will depend on input shape
-        out = F.avg_pool2d(out, 56)
+        out = F.avg_pool2d(out, 25)
 
         out = out.view(-1, self.n_channels[-1])
         out = self.linear(out)
@@ -249,9 +249,9 @@ def WRN40_4(num_classes=7):
     return WideResNet(depth=40, num_classes=num_classes, widen_factor=4)
 
 def test():
-    net = WRN40_4(num_classes=7)
-    y = net(torch.randn(64, 3, 224, 224))
+    net = WRN40_4(num_classes=7).to("cuda")
+    y = net(torch.randn(64, 3, 100, 100).to("cuda"))
     print(y.size())
 
-# test()
+test()
 
