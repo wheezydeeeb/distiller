@@ -167,7 +167,7 @@ class WideResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
         """Changes introduced for metric function incorporation"""
-        self.linear = nn.Linear(n_channels[3] * 8 * 8, 512)
+        self.linear = nn.Linear(n_channels[3] * 5 * 5, 512)
         self.metric_fc = SphereProduct(in_features=512, out_features = num_classes)
         self.n_channels = n_channels
 
@@ -190,7 +190,7 @@ class WideResNet(nn.Module):
 
         # Average pooling will depend on input shape, also
         # adjust the linear layer accordingly
-        out = F.avg_pool2d(out, 7)
+        out = F.avg_pool2d(out, 5)
 
         out = out.view(out.size(0), -1)
 
@@ -252,7 +252,7 @@ def WRN40_4(num_classes=7):
 
 def test():
     net = WRN40_4(num_classes=7).to("cuda")
-    y = net(torch.randn(32, 3, 224, 224).to("cuda"))
+    y = net(torch.randn(32, 3, 100, 100).to("cuda"))
     print(y.size())
 
 test()
