@@ -159,7 +159,7 @@ def test_multikd(s_net, t_net1, params):
     t_net3 = create_model(
         params["t3_name"], params["num_classes"], params["device"])
     t_net3 = util.load_checkpoint(
-        t_net3, "/home/khincho/distillers/distiller/results/TEACHERS/RAFDB/WRN28_1_SPHERED_FL2_SGD_MULTISTEPLR/rafdb/nokd/WRN40_1_best.pth.tar")
+        t_net3, "/home/khincho/distillers/distiller/results/TEACHERS/RAFDB/WRN48_1_SPHERED_FL2_SGD_MULTISTEPLR/rafdb/nokd/WRN40_1_best.pth.tar")
     t_net3 = freeze_teacher(t_net3)
 
     t_nets = [t_net2, t_net3]
