@@ -167,7 +167,8 @@ class WideResNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
 
         """Changes introduced for metric function incorporation"""
-        self.linear = nn.Linear(n_channels[3], 512)
+        # self.linear = nn.Linear(n_channels[3], 512)
+        self.linear = nn.Linear(576, 512)
         self.metric_fc = SphereProduct(in_features=512, out_features = num_classes)
         self.n_channels = n_channels
 
