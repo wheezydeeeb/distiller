@@ -253,5 +253,5 @@ def test():
     y = net(torch.randn(64, 3, 224, 224))
     print(y.size())
 
-test()
+# test()
 
