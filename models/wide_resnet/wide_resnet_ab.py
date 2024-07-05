@@ -252,7 +252,7 @@ def WRN40_4(num_classes=7):
 
 def test():
     net = WRN40_4(num_classes=7).to("cuda")
-    y = net(torch.randn(64, 3, 224, 224).to("cuda"))
+    y = net(torch.randn(1, 3, 224, 224).to("cuda"))
     print(y.size())
 
 test()
