@@ -188,10 +188,10 @@ class WideResNet(nn.Module):
         out = self.layer3(out)
         out = self.relu(self.bn1(out))
 
-        # Average pooling will depend on input shape
+        # Average pooling will depend on input shape, also
+        # adjust the linear layer accordingly
         out = F.avg_pool2d(out, 7)
 
-        # out = out.view(-1, self.n_channels[-1])
         out = out.view(out.size(0), -1)
 
         out = self.linear(out)
