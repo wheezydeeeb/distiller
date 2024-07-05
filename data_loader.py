@@ -63,10 +63,10 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
         normalize = transforms.Normalize(
             mean=[0.507, 0.487, 0.441], std=[0.267, 0.256, 0.276])
     elif num_classes == 7:
-        print("Loading FER2013...")
+        print("Loading RAF-DB...")
         dataset = torchvision.datasets.ImageFolder
         normalize = transforms.Normalize(
-            mean=[0.5], std=[0.5])
+            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     elif num_classes == 8:
         print("Loading FERPlus...")
         dataset = torchvision.datasets.ImageFolder
@@ -75,8 +75,8 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
 
     train_transform = transforms.Compose([
         # transforms.RandomCrop(32, padding=4),
-        transforms.Grayscale(num_output_channels=1),
-        transforms.Resize([48, 48]),
+        # transforms.Grayscale(num_output_channels=1),
+        transforms.Resize([100, 100]),
         transforms.ToTensor(),
         normalize,
     ])
@@ -84,11 +84,11 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
     # trainset = dataset(root=dataset_dir, train=True,
     #                    download=True, transform=train_transform)
 
-    trainset = dataset("/home/khincho/data/FERPlus/train/", transform=train_transform)
+    trainset = dataset("/home/khincho/data/RAF-DB/train/", transform=train_transform)
 
     test_transform = transforms.Compose([
-        transforms.Grayscale(num_output_channels=1),
-        transforms.Resize([48, 48]),
+        # transforms.Grayscale(num_output_channels=1),
+        transforms.Resize([100, 100]),
         transforms.ToTensor(),
         normalize,
     ])

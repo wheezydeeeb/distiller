@@ -320,7 +320,7 @@ def start_evaluation(args):
         num_classes = 100
     elif args.dataset == "cifar10":
         num_classes = 10
-    elif args.dataset == "fer2013":
+    elif args.dataset == "rafdb":
         num_classes = 7
     elif args.dataset == "ferplus":
         num_classes = 8
