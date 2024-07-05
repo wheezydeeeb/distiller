@@ -80,7 +80,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
         # transforms.RandomCrop(32, padding=4),
         # transforms.Grayscale(num_output_channels=1),
         # transforms.ToPILImage(),
-        transforms.Resize((224, 224)),
+        transforms.Resize((100, 100)),
         transforms.ToTensor(),
         normalize,
         transforms.RandomErasing(scale=(0.02, 0.1))
@@ -94,7 +94,7 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
     test_transform = transforms.Compose([
         # transforms.Grayscale(num_output_channels=1),
         # transforms.ToPILImage(),
-        transforms.Resize((224, 224)),
+        transforms.Resize((100, 100)),
         transforms.ToTensor(),
         normalize,
     ])
