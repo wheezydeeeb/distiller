@@ -205,7 +205,7 @@ class Trainer():
             # update the scheduler
             if self.scheduler:
                 self.scheduler.step()
-            self.acc_file.write(f"{train_acc},{val_acc},{train_loss},{val_loss}\n")
+            self.acc_file.write(f"{train_acc},{val_acc},{train_loss},{val_loss},{self.config['lambda_student']}\n")
 
         # End timing
         end_time = time.time()
