@@ -181,10 +181,17 @@ class Trainer():
         best_acc = 0
         t_bar = init_progress_bar(self.train_loader)
 
-        # Start timing
         start_time = time.time()
 
+        # Save the maximum value of lambda for dynamic balancing and beta
+        lambda_max = self.config["lambda_student"]
+        beta = 0.65
+
         for epoch in range(epochs):
+
+            # Update the value of lambda based on dynamic balancing
+            self.config["lambda_student"] = lambda_max * math.exp(-1.0 * beta * (1.0 - epoch / (epochs - 1) ** 2))
+
             # update progress bar
             t_bar.reset()
             t_bar.set_description(f"Epoch {epoch}")
