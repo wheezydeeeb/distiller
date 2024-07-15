@@ -67,39 +67,39 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
         dataset = torchvision.datasets.ImageFolder
         normalize = transforms.Normalize(
             mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    elif num_classes == 8:
-        print("Loading AffectNet...")
-        dataset = torchvision.datasets.ImageFolder
-        normalize = transforms.Normalize(
-            mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
     # elif num_classes == 8:
-    #     print("Loading FERPlus...")
+    #     print("Loading AffectNet...")
     #     dataset = torchvision.datasets.ImageFolder
     #     normalize = transforms.Normalize(
-    #         mean=[0.5], std=[0.5])
+    #         mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    elif num_classes == 8:
+        print("Loading FERPlus...")
+        dataset = torchvision.datasets.ImageFolder
+        normalize = transforms.Normalize(
+            mean=[0.5], std=[0.5])
 
     print(f"BATCH_SIZE = {batch_size}")
 
-    # Transforms for RAF-DB dataset
+    # Transforms for FERPlus dataset
     train_transform = transforms.Compose([
         # transforms.RandomCrop(32, padding=4),
-        # transforms.Grayscale(num_output_channels=1),
+        transforms.Grayscale(num_output_channels=1),
         # transforms.ToPILImage(),
-        transforms.Resize((100, 100)),
+        transforms.Resize((48, 48)),
         transforms.ToTensor(),
         normalize,
-        transforms.RandomErasing(scale=(0.02, 0.1))
+        # transforms.RandomErasing(scale=(0.02, 0.1))
     ])
 
     # trainset = dataset(root=dataset_dir, train=True,
     #                    download=True, transform=train_transform)
 
-    trainset = dataset("/home/khincho/data/RAF-DB/train/", transform=train_transform)
+    trainset = dataset("/home/khincho/data/FERPlus/train/", transform=train_transform)
 
     test_transform = transforms.Compose([
-        # transforms.Grayscale(num_output_channels=1),
+        transforms.Grayscale(num_output_channels=1),
         # transforms.ToPILImage(),
-        transforms.Resize((100, 100)),
+        transforms.Resize((48, 48)),
         transforms.ToTensor(),
         normalize,
     ])
@@ -113,9 +113,9 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
                           download=True,
                           transform=test_transform)
     elif num_classes == 7:
-        testset = dataset("/home/khincho/data/RAF-DB/val/", transform=test_transform)
+        testset = dataset("/home/khincho/data/FERPlus/val/", transform=test_transform)
     elif num_classes == 8:
-        testset = dataset("/home/khincho/data/RAF-DB/val/", transform=test_transform)
+        testset = dataset("/home/khincho/data/FERPlus/val/", transform=test_transform)
 
     train_loader = torch.utils.data.DataLoader(trainset,
                                                batch_size=batch_size,
