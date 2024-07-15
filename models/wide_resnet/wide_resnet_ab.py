@@ -190,7 +190,7 @@ class WideResNet(nn.Module):
 
         # Average pooling will depend on input shape, also
         # adjust the linear layer accordingly
-        out = F.avg_pool2d(out, 6)
+        out = F.avg_pool2d(out, 8)
 
         out = out.view(out.size(0), -1)
 
@@ -252,8 +252,9 @@ def WRN40_4(num_classes=7):
 
 def test():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    net = WRN40_1(num_classes=8).to("device")
-    y = net(torch.randn(16, 1, 48, 48).to("device"))
+    net = WRN40_1(num_classes=8).to(device)
+    y = net(torch.randn(16, 1, 48, 48).to(device))
+    # y = net(torch.randn(16, 1, 48, 48).to(device), torch.randn(16, dtype=torch.long).to(device))
     print(y.size())
 
 test()
