@@ -190,7 +190,7 @@ class Trainer():
         for epoch in range(epochs):
 
             # Update the value of lambda based on dynamic balancing
-            self.config["lambda_student"] = lambda_max * math.exp(-1.0 * beta * (1.0 - epoch / (epochs - 1) ** 2))
+            self.config["lambda_student"] = lambda_max * math.exp(-1.0 * beta * ((1.0 - epoch / (epochs - 1)) ** 2))
 
             # update progress bar
             t_bar.reset()
