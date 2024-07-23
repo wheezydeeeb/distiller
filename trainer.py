@@ -7,6 +7,7 @@ from datetime import timedelta
 from torch import nn
 from tqdm import tqdm
 from torch import optim
+import torch.nn as nn
 from torch.nn import DataParallel
 import numpy as np
 from torch.nn.modules.batchnorm import _BatchNorm
@@ -28,6 +29,75 @@ class FocalLoss(nn.Module):
         p = torch.exp(-logp)
         loss = (1 - p) ** self.gamma * logp
         return loss.mean()
+        
+
+
+
+
+# class AdaRegLoss(nn.Module):
+#     def __init__(self, num_classes, lambda_param=1.0):
+#         super(AdaRegLoss, self).__init__()
+#         self.num_classes = num_classes
+#         self.lambda_param = lambda_param
+#         print(f"Using AdaReg Loss : lambda = {lambda_param}")
+
+#     def forward(self, representations, labels):
+#         """
+#         representations: Tensor of shape (batch_size, representation_dim)
+#         labels: Tensor of shape (batch_size)
+#         """
+#         batch_size = representations.size(0)
+
+#         # Calculate the regular term
+#         L_Reg = 0.0
+#         for i in range(self.num_classes):
+#             for j in range(i + 1, self.num_classes):
+#                 e_i = representations[labels == i].mean(dim=0)
+#                 e_j = representations[labels == j].mean(dim=0)
+#                 L_Reg += torch.norm(e_i - e_j) ** 2
+
+#         L_Reg /= self.lambda_param
+
+#         # Calculate the adaptive importance coefficients
+#         class_counts = torch.zeros(self.num_classes)
+#         for i in range(self.num_classes):
+#             class_counts[i] = (labels == i).sum()
+
+#         alpha = 1 - class_counts / batch_size
+
+#         # Calculate the AdaReg loss
+#         L_AdaReg = 0.0
+#         for i in range(self.num_classes):
+#             for j in range(i + 1, self.num_classes):
+#                 e_i = representations[labels == i].mean(dim=0)
+#                 e_j = representations[labels == j].mean(dim=0)
+#                 L_AdaReg += alpha[i] * (torch.norm(e_i - e_j) ** 2)
+
+#         L_AdaReg /= self.lambda_param
+
+#         return L_AdaReg
+        
+
+# class AdaRegLoss(nn.Module):
+#     def __init__(self, num_classes, lambda_param=1.0):
+#         super(AdaRegLoss, self).__init__()
+#         self.num_classes = num_classes
+#         self.expansion_parameter = lambda_param
+#         # Initialize expression category representations
+#         self.expression_representations = nn.Parameter(torch.randn(num_classes, 128))  # Assuming 128-dimensional space
+#         # Initialize importance coefficients
+#         self.alpha = nn.Parameter(torch.ones(num_classes))  # Importance coefficients, initialized to 1
+# 
+#     def forward(self, outputs, targets):
+#         loss = 0.0
+#         for i in range(self.num_classes - 1):
+#             for j in range(i + 1, self.num_classes):
+#                 diff = self.expression_representations[i] - self.expression_representations[j]
+#                 norm = torch.norm(diff, p=2)
+#                 loss += self.alpha[i] * (norm ** 2)
+#         loss = loss / self.expansion_parameter
+#         return loss
+
 
 # EMA Optimizer for distillation framework
 class WeightEMA(optim.Optimizer):
@@ -93,6 +163,7 @@ class Trainer():
         # print(f"Using Cross Entropy Loss")
 
         self.loss_fun = FocalLoss(gamma=2)
+        # self.ada_reg_loss = AdaRegLoss(num_classes=config["num_classes"], lambda_param=1.0)
 
         self.net = net
         self.device = config["device"]
@@ -172,7 +243,7 @@ class Trainer():
             t_bar.set_postfix_str(f"Acc {curr_acc:.3f}% Loss {curr_loss:.3f}")
         # total_acc = float(total_correct / len_train_set)
         total_acc = curr_acc
-        total_loss = total_loss / float(batch_idx)
+        total_loss = total_loss.item() / float(batch_idx) 
         return total_acc, total_loss
 
     def train(self):
@@ -231,7 +302,7 @@ class Trainer():
                 # images = images.repeat(1, 3, 1, 1).to(self.device)
                 images = images.to(self.device)
                 labels = labels.to(self.device).long()
-                output = self.net(images, labels)
+                _, output = self.net(images, labels)
                 # Standard Learning Loss ( Classification Loss)
                 loss += self.loss_fun(output, labels)
                 # get the index of the max log-probability
@@ -386,8 +457,28 @@ class MultiTrainer(KDTrainer):
     def calculate_loss_first(self, data, target):
         lambda_ = self.config["lambda_student"]
         T = self.config["T_student"]
-        out_s = self.s_net(data, target)
+        attention_weights, out_s = self.s_net(data, target)
         loss = self.loss_fun(out_s, target)
+        
+        # Rank Regularization
+        batch_sz = self.config["batch_size"]
+        tops = int(batch_sz * 0.7)
+        margin_1 = 0.15
+        _, top_idx = torch.topk(attention_weights.squeeze(), tops)
+        _, down_idx = torch.topk(attention_weights.squeeze(), batch_sz - tops, largest = False)
+
+        high_group = attention_weights[top_idx]
+        low_group = attention_weights[down_idx]
+        high_mean = torch.mean(high_group)
+        low_mean = torch.mean(low_group)
+        # diff  = margin_1 - (high_mean - low_mean)
+        diff  = low_mean - high_mean + margin_1
+
+        if diff > 0:
+            RR_loss = diff
+        else:
+            RR_loss = 0.0
+        
         # Average Knowledge Distillation Loss
         loss_kd = 0.0
         for t_net in self.t_nets:
@@ -397,8 +488,8 @@ class MultiTrainer(KDTrainer):
         # Maximum Voting Knowledge Distillation Loss
         # loss_kd_list = [self.kd_loss(out_s, t_net(data, target), target) for t_net in self.t_nets]
         # loss_kd = max(loss_kd_list)
-        loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd
-        loss.mean().backward()
+        loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd + RR_loss
+        loss.backward()
         self.optimizer.first_step()
         # Stepping the ema_optimizer
         # self.ema_optimizer.step()
@@ -407,8 +498,28 @@ class MultiTrainer(KDTrainer):
     def calculate_loss_second(self, data, target):
         lambda_ = self.config["lambda_student"]
         T = self.config["T_student"]
-        out_s = self.s_net(data, target)
+        attention_weights, out_s = self.s_net(data, target)
         loss = self.loss_fun(out_s, target)
+        
+        # Rank Regularization
+        batch_sz = self.config["batch_size"]
+        tops = int(batch_sz * 0.7)
+        margin_1 = 0.15
+        _, top_idx = torch.topk(attention_weights.squeeze(), tops)
+        _, down_idx = torch.topk(attention_weights.squeeze(), batch_sz - tops, largest = False)
+
+        high_group = attention_weights[top_idx]
+        low_group = attention_weights[down_idx]
+        high_mean = torch.mean(high_group)
+        low_mean = torch.mean(low_group)
+        # diff  = margin_1 - (high_mean - low_mean)
+        diff  = low_mean - high_mean + margin_1
+
+        if diff > 0:
+            RR_loss = diff
+        else:
+            RR_loss = 0.0
+        
         # Average Knowledge Distillation Loss
         loss_kd = 0.0
         for t_net in self.t_nets:
@@ -418,8 +529,8 @@ class MultiTrainer(KDTrainer):
         # Maximum Voting Knowledge Distillation Loss
         # loss_kd_list = [self.kd_loss(out_s, t_net(data, target), target) for t_net in self.t_nets]
         # loss_kd = max(loss_kd_list)
-        loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd
-        loss.mean().backward()
+        loss = (1 - lambda_) * loss + lambda_ * T * T * loss_kd + RR_loss
+        loss.backward()
         self.optimizer.second_step()
         # Stepping the ema_optimizer
         # self.ema_optimizer.step()

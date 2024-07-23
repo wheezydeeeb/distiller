@@ -19,7 +19,7 @@ def parse_arguments():
         description="Test parameters")
     parser.add_argument("--epochs", default=100, type=int,
                         help="number of total epochs to run")
-    parser.add_argument("--dataset", default="cifar100", type=str,
+    parser.add_argument("--dataset", default="ferplus", type=str, choices = {'ferplus', 'rafdb', 'affectnet', 'cifar10', 'cifar100'},
                         help="dataset. can be either cifar10 or cifar100")
     parser.add_argument("--batch-size", default=BATCH_SIZE,
                         type=int, help="batch_size")
@@ -108,6 +108,7 @@ def setup_student(s_name, params):
 
 def freeze_teacher(t_net):
     # freeze the layers of the teacher
+    print("-------------------------type(t_net)-------------------",type(t_net), t_net)
     for param in t_net.parameters():
         param.requires_grad = False
     # set the teacher net into evaluation mode

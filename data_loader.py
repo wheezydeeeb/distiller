@@ -120,10 +120,12 @@ def get_data_loader(num_classes=100, dataset_dir="/home/khincho/distillers/datas
     train_loader = torch.utils.data.DataLoader(trainset,
                                                batch_size=batch_size,
                                                num_workers=NUM_WORKERS,
-                                               pin_memory=True, shuffle=True)
+                                               pin_memory=True, shuffle=True,
+                                               drop_last=True)
     test_loader = torch.utils.data.DataLoader(testset,
                                               batch_size=batch_size,
                                               num_workers=NUM_WORKERS,
-                                              pin_memory=True, shuffle=False)
+                                              pin_memory=True, shuffle=False,
+                                              drop_last=True)
     return train_loader, test_loader
 

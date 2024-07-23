@@ -193,11 +193,78 @@ class WideResNet(nn.Module):
         out = F.avg_pool2d(out, 8)
 
         out = out.view(out.size(0), -1)
-
+        
         out = self.linear(out)
+        
         if labels is not None:
             return self.metric_fc(out, labels)
         return out
+
+    def get_channel_num(self):
+        return self.n_channels
+        
+        
+class WideResNet_student(nn.Module):
+    """Wide ResNet Class for student"""
+    def __init__(self, depth, num_classes, widen_factor=1, dropRate=0.0):
+        super(WideResNet_student, self).__init__()
+        n_channels = [16, 16 * widen_factor,
+                      32 * widen_factor, 64 * widen_factor]
+        assert((depth - 4) % 6 == 0)
+        n = (depth - 4) / 6
+        block = BasicBlock
+        # 1st conv before any network block
+        self.conv1 = nn.Conv2d(1, n_channels[0], kernel_size=3, stride=1,
+                               padding=1, bias=False)
+        # 1st block
+        self.layer1 = NetworkBlock(
+            n, n_channels[0], n_channels[1], block, 1, dropRate)
+        # 2nd block
+        self.layer2 = NetworkBlock(
+            n, n_channels[1], n_channels[2], block, 2, dropRate)
+        # 3rd block
+        self.layer3 = NetworkBlock(
+            n, n_channels[2], n_channels[3], block, 2, dropRate)
+        # global average pooling and classifier
+        self.bn1 = nn.BatchNorm2d(n_channels[3])
+        self.relu = nn.ReLU(inplace=True)
+
+        """Changes introduced for metric function incorporation"""
+        self.linear = nn.Linear(n_channels[3], 512)
+        self.metric_fc = SphereProduct(in_features=512, out_features = num_classes)
+        self.alpha = nn.Sequential(nn.Linear(n_channels[3], 1),nn.Sigmoid())
+        self.n_channels = n_channels
+
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d):
+                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
+                m.weight.data.normal_(0, math.sqrt(2. / n))
+            elif isinstance(m, nn.BatchNorm2d):
+                m.weight.data.fill_(1)
+                m.bias.data.zero_()
+            elif isinstance(m, nn.Linear):
+                m.bias.data.zero_()
+
+    def forward(self, x, labels=None):
+        out = self.conv1(x)
+        out = self.layer1(out)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.relu(self.bn1(out))
+
+        # Average pooling will depend on input shape, also
+        # adjust the linear layer accordingly
+        out = F.avg_pool2d(out, 8)
+
+        out = out.view(out.size(0), -1)
+        
+        attention_weights = self.alpha(out)
+        
+        out = attention_weights * self.linear(out)
+        
+        if labels is not None:
+            return attention_weights, self.metric_fc(out, labels)
+        return attention_weights, out
 
     def get_channel_num(self):
         return self.n_channels
@@ -240,7 +307,7 @@ def WRN28_1(num_classes=7):
 
 
 def WRN10_1(num_classes=7):
-    return WideResNet(depth=10, num_classes=num_classes, widen_factor=1)
+    return WideResNet_student(depth=10, num_classes=num_classes, widen_factor=1)
 
 
 def WRN40_1(num_classes=7):
@@ -252,10 +319,10 @@ def WRN40_4(num_classes=7):
 
 def test():
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    net = WRN40_1(num_classes=8).to(device)
-    y = net(torch.randn(16, 1, 48, 48).to(device))
+    net = WRN10_1(num_classes=8).to(device)
+    attn, _ = net(torch.randn(16, 1, 48, 48).to(device))
     # y = net(torch.randn(16, 1, 48, 48).to(device), torch.randn(16, dtype=torch.long).to(device))
-    print(y.size())
+    print(attn.size())
 
 test()
 
